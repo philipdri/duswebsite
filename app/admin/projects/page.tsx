@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
-import { deleteProject, togglePublished } from './actions'
+import { togglePublished } from './actions'
+import DeleteProjectButton from './components/DeleteProjectButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -147,30 +148,7 @@ export default async function AdminProjectsPage() {
                       >
                         REDIGER
                       </Link>
-                      <form
-                        action={deleteProject}
-                        onSubmit={(e) => {
-                          if (!confirm(`Slett "${project.title}"? Dette kan ikke angres.`)) {
-                            e.preventDefault()
-                          }
-                        }}
-                      >
-                        <input type="hidden" name="id" value={project.id} />
-                        <button
-                          type="submit"
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#c0392b',
-                            fontSize: '0.75rem',
-                            letterSpacing: '0.1em',
-                            cursor: 'pointer',
-                            padding: 0,
-                          }}
-                        >
-                          SLETT
-                        </button>
-                      </form>
+                      <DeleteProjectButton id={project.id} title={project.title} />
                     </div>
                   </td>
                 </tr>

@@ -30,7 +30,7 @@
 │   │   └── prosjekter/
 │   │       └── [slug]/
 │   │           └── page.tsx    # Dynamic project detail page (DB-driven)
-│   ├── admin/                  # Admin area (protected by proxy.ts)
+│   ├── admin/                  # Admin area (protected by middleware.ts)
 │   │   ├── layout.tsx          # Admin layout: black nav bar
 │   │   ├── page.tsx            # Admin dashboard
 │   │   ├── login/
@@ -73,7 +73,7 @@
 │   └── seed.ts                 # Seed script: imports static projects into DB
 │
 ├── prisma.config.ts            # Prisma 7 config: datasource URL
-├── proxy.ts                    # Next.js Proxy (formerly Middleware): admin route protection
+├── middleware.ts                # Next.js Middleware: admin route protection
 │
 ├── public/
 │   └── img/                    # All static images (copied from legacy img/)
@@ -119,9 +119,9 @@ The app uses a route group `(public)` to separate public pages from admin pages:
 ## Auth Architecture
 
 1. **Login**: POST to `app/actions/auth.ts` → `login()` server action
-   - Compares submitted password with `ADMIN_PASSWORD` env variable
+   - Compares submitted password with `ADMIN_PASSWORD` env variable using constant-time comparison (`crypto.timingSafeEqual`)
    - On success: creates a signed JWT via `lib/session.ts`, stores in `HttpOnly` cookie
-2. **Protection**: `proxy.ts` runs on all `/admin/*` routes
+2. **Protection**: `middleware.ts` runs on all `/admin/*` routes
    - Reads the `admin_session` cookie
    - Verifies JWT signature using `ADMIN_SESSION_SECRET`
    - Redirects to `/admin/login` if invalid or missing
@@ -135,7 +135,7 @@ The app uses a route group `(public)` to separate public pages from admin pages:
 ### Public site (with DB connected)
 
 ```
-Request → proxy.ts (no admin route, passes through)
+Request → middleware.ts (no admin route, passes through)
        → app/(public)/layout.tsx (Header + Footer)
        → page.tsx / [slug]/page.tsx
        → lib/projects-db.ts → prisma.project.findMany({ published: true })

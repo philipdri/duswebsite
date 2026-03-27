@@ -1,4 +1,5 @@
 'use server'
+import { timingSafeEqual } from 'crypto'
 import { redirect } from 'next/navigation'
 import { createAdminSession, deleteAdminSession } from '@/lib/session'
 
@@ -13,7 +14,22 @@ export async function login(
     return { error: 'Server misconfiguration: ADMIN_PASSWORD not set.' }
   }
 
-  if (!password || password !== adminPassword) {
+  if (!password) {
+    return { error: 'Feil passord.' }
+  }
+
+  let passwordsMatch = false
+  try {
+    passwordsMatch = timingSafeEqual(
+      Buffer.from(password),
+      Buffer.from(adminPassword),
+    )
+  } catch {
+    // Buffers of different lengths throw — treat as mismatch
+    passwordsMatch = false
+  }
+
+  if (!passwordsMatch) {
     return { error: 'Feil passord.' }
   }
 

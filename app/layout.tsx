@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,17 +19,19 @@ export default function RootLayout({
     <html lang="no">
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/vfr3hyb.css" />
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script
+      </head>
+      <body>
+        {children}
+        <Script
           type="module"
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
-        ></script>
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script
+          strategy="lazyOnload"
+        />
+        <Script
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
-        ></script>
-      </head>
-      <body>{children}</body>
+          strategy="lazyOnload"
+        />
+      </body>
     </html>
   );
 }
