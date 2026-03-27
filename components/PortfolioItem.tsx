@@ -2,10 +2,16 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Project } from '@/lib/projects';
+
+export interface PortfolioProject {
+  slug: string;
+  title: string;
+  coverImage: string;
+  portfolioLabel: string;
+}
 
 interface PortfolioItemProps {
-  project: Project;
+  project: PortfolioProject;
   index: number;
 }
 
