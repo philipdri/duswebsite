@@ -32,34 +32,28 @@ export default async function ProjectPage({ params }: Props) {
     images: { src: string; caption: string | null }[];
   } | null = null;
 
+  function toProjectFromStatic(p: typeof import('@/lib/projects').projects[number]) {
+    return {
+      title: p.title,
+      description: p.description,
+      location: p.location,
+      year: p.year,
+      images: p.images,
+    };
+  }
+
   try {
     project = await getPublishedProjectBySlug(slug);
   } catch {
     // DB unavailable — fall back to static
     const staticProject = getProjectBySlug(slug);
-    if (staticProject) {
-      project = {
-        title: staticProject.title,
-        description: staticProject.description,
-        location: staticProject.location,
-        year: staticProject.year,
-        images: staticProject.images,
-      };
-    }
+    if (staticProject) project = toProjectFromStatic(staticProject);
   }
 
   if (!project) {
     // Also try static fallback when DB returns null
     const staticProject = getProjectBySlug(slug);
-    if (staticProject) {
-      project = {
-        title: staticProject.title,
-        description: staticProject.description,
-        location: staticProject.location,
-        year: staticProject.year,
-        images: staticProject.images,
-      };
-    }
+    if (staticProject) project = toProjectFromStatic(staticProject);
   }
 
   if (!project) {

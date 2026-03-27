@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Dus Arkitekter",
@@ -20,19 +18,17 @@ export default function RootLayout({
     <html lang="no">
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/vfr3hyb.css" />
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script
           type="module"
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
         ></script>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
         ></script>
       </head>
-      <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
