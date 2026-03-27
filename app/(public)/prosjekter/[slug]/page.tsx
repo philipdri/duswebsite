@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { projects, getProjectBySlug } from "@/lib/projects";
+import { getPublishedProjectBySlug, getPublishedProjectSlugs } from "@/lib/projects-db";
 import ProjectSlideshow from "@/components/ProjectSlideshow";
 import Link from "next/link";
 
@@ -7,13 +8,53 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+  try {
+    const slugs = await getPublishedProjectSlugs();
+    return slugs.map((slug) => ({ slug }));
+  } catch {
+    // Fallback to static slugs when DB is unavailable (build time)
+    return projects.map((p) => ({ slug: p.slug }));
+  }
 }
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+
+  // Try DB first; fall back to static data
+  let project: {
+    title: string;
+    description: string | null;
+    location: string | null;
+    year: string | null;
+    images: { src: string; caption: string | null }[];
+  } | null = null;
+
+  function toProjectFromStatic(p: typeof import('@/lib/projects').projects[number]) {
+    return {
+      title: p.title,
+      description: p.description,
+      location: p.location,
+      year: p.year,
+      images: p.images,
+    };
+  }
+
+  try {
+    project = await getPublishedProjectBySlug(slug);
+  } catch {
+    // DB unavailable — fall back to static
+    const staticProject = getProjectBySlug(slug);
+    if (staticProject) project = toProjectFromStatic(staticProject);
+  }
+
+  if (!project) {
+    // Also try static fallback when DB returns null
+    const staticProject = getProjectBySlug(slug);
+    if (staticProject) project = toProjectFromStatic(staticProject);
+  }
 
   if (!project) {
     notFound();
@@ -45,26 +86,26 @@ export default async function ProjectPage({ params }: Props) {
         </h1>
 
         <div className="my-12">
-          <ProjectSlideshow images={project.images} />
+          <ProjectSlideshow images={project.images.map((img) => ({ src: img.src, caption: img.caption ?? '' }))} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 my-12 py-8" style={{ borderTop: '1px solid #666669', borderBottom: '1px solid #666669' }}>
           <div>
             <p className="font-classico text-xs tracking-widest mb-2" style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400 }}>PROSJEKT</p>
-            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.projectName}</p>
+            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.title}</p>
           </div>
           <div>
             <p className="font-classico text-xs tracking-widest mb-2" style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400 }}>STED</p>
-            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.location}</p>
+            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.location || '—'}</p>
           </div>
           <div>
             <p className="font-classico text-xs tracking-widest mb-2" style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400 }}>ÅRSTALL</p>
-            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.year}</p>
+            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.year || '—'}</p>
           </div>
         </div>
 
         <div className="max-w-2xl">
-          {project.description.split('\n\n').map((paragraph, i) => (
+          {(project.description || '').split('\n\n').map((paragraph, i) => (
             <p
               key={i}
               className="font-classico leading-relaxed mb-4"
