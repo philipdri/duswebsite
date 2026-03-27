@@ -4,7 +4,7 @@ export default function AboutSection() {
       id="omoss"
       className="relative mt-8"
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: '#f7f4f0',
         borderRadius: '50px 50px 0 0',
         boxShadow: '0 -2px 15px rgba(0,0,0,0.1)',
         padding: '80px 40px',
@@ -12,33 +12,51 @@ export default function AboutSection() {
     >
       <div className="max-w-4xl mx-auto">
         <h2
-          className="font-classico tracking-widest text-sm mb-12"
-          style={{ color: '#737373', letterSpacing: '0.25em', fontWeight: 400 }}
+          id="overskrift_omoss"
+          className="font-classico mb-8"
+          style={{ color: '#000', fontWeight: 400, fontSize: 'clamp(7px, 3vw, 60px)' }}
         >
-          OM OSS
+          Om Dus Arkitekter
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+        <div className="flex flex-col gap-12">
           <div>
             <p
-              className="font-classico leading-relaxed mb-6"
-              style={{ color: '#434343', fontWeight: 300, fontSize: '1rem', lineHeight: '1.8' }}
-            >
-              DUS Arkitekter er et arkitektkontor med fokus på bærekraftig design og menneskelig skala. Vi tror på arkitektur som er i harmoni med sine omgivelser – med naturen, med historien og med menneskene som bruker rommene.
-            </p>
-            <p
               className="font-classico leading-relaxed"
-              style={{ color: '#434343', fontWeight: 300, fontSize: '1rem', lineHeight: '1.8' }}
+              style={{ color: '#434343', fontWeight: 300, fontSize: 'clamp(6px, 1vw, 15px)', lineHeight: '1.8' }}
             >
-              Våre prosjekter spenner fra private boliger til offentlige kulturbygg, alltid med samme dedikasjon til kvalitet, detalj og kontekst.
+              Vi er et lite og nyoppstartet, men ambisiøst arkitektkontor som er
+              drevet av to engasjerte arkitekter - Synne Spjeld Høyvik og Anniken
+              Marie Haugan.
+              <br />
+              <br />
+              Navnet Dus Arkitekter kommer fra vår visjon om å være
+              &quot;dus&quot; med våre klienter, prosjekter og omgivelsene selv. For oss
+              handler Dus om å være i harmoni med noe eller noen, og det har blitt
+              grunnleggende for vår estetikk som ellers er preget av renhet,
+              funksjonalitet og tidløs eleganse.
+              <br />
+              <br />
+              Vi har erfaring innenfor tilbygg og transformasjon av hytter og eneboliger, men vårt interessefelt er bredt og vi tar gjerne både større og mindre prosjekter. Så hvis vi skulle være av interesse, ikke nøl med å ta kontakt for en hyggelig, uforpliktende prat.
             </p>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-row gap-8 flex-wrap">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/img/oss.jpg"
-              alt="DUS Arkitekter team"
-              className="w-full object-cover"
-              style={{ borderRadius: '4px', maxHeight: '300px' }}
+              alt="Oss bak Dus!"
+              style={{ boxShadow: '0 4px 10px rgba(0,0,0,0.1)', height: '20em', width: 'auto' }}
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/img/oppheng.jpg"
+              alt="Oss bak Dus!"
+              style={{ boxShadow: '0 4px 10px rgba(0,0,0,0.1)', height: '20em', width: 'auto' }}
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/img/byplanlegging.jpg"
+              alt="Oss bak Dus!"
+              style={{ boxShadow: '0 4px 10px rgba(0,0,0,0.1)', height: '20em', width: 'auto' }}
             />
           </div>
         </div>

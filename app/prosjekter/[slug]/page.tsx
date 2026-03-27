@@ -64,12 +64,15 @@ export default async function ProjectPage({ params }: Props) {
         </div>
 
         <div className="max-w-2xl">
-          <p
-            className="font-classico leading-relaxed"
-            style={{ color: '#434343', fontWeight: 300, fontSize: '1rem', lineHeight: '1.9' }}
-          >
-            {project.description}
-          </p>
+          {project.description.split('\n\n').map((paragraph, i) => (
+            <p
+              key={i}
+              className="font-classico leading-relaxed mb-4"
+              style={{ color: '#434343', fontWeight: 300, fontSize: '1rem', lineHeight: '1.9' }}
+            >
+              {paragraph}
+            </p>
+          ))}
         </div>
       </div>
     </div>

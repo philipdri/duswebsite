@@ -1,49 +1,100 @@
 import { services } from "@/lib/services";
-import React from "react";
 
 export default function TjenesterPage() {
   return (
     <div style={{ paddingTop: '10vh', backgroundColor: '#f7f4f0', minHeight: '100vh' }}>
-      <div className="max-w-5xl mx-auto px-8 py-16">
-        <h1
-          className="font-classico tracking-widest text-sm mb-16"
-          style={{ color: '#737373', letterSpacing: '0.25em', fontWeight: 400 }}
+      <div
+        style={{
+          marginTop: '15%',
+          paddingLeft: '7%',
+          paddingRight: '7%',
+          width: '85%',
+          display: 'flex',
+          flexDirection: 'row' as const,
+          justifyContent: 'space-between',
+          alignContent: 'flex-start',
+          boxSizing: 'border-box' as const,
+        }}
+      >
+        <p
+          className="font-classico"
+          style={{
+            fontWeight: 150,
+            lineHeight: '1.4',
+            color: '#000000',
+            fontSize: 'clamp(10px, 2.5vw, 30px)',
+            textAlign: 'left',
+            width: '55%',
+          }}
         >
-          TJENESTER
-        </h1>
-        <div className="flex flex-col gap-16">
-          {services.map((service, index) => (
+          Vi har erfaring innenfor tilbygg og transformasjon av hytter og eneboliger, men vårt interessefelt er bredt og vi tar gjerne både større og mindre prosjekter. Så hvis vi skulle være av interesse, ikke nøl med å ta kontakt for en hyggelig, uforpliktende prat.
+        </p>
+      </div>
+      <div
+        className="font-classico"
+        style={{
+          paddingLeft: '12%',
+          paddingRight: '12%',
+          marginTop: '10%',
+          marginBottom: '10%',
+          display: 'flex',
+          flexDirection: 'column' as const,
+          gap: '0',
+        }}
+      >
+        {services.map((service, index) => (
+          <div
+            key={service.id}
+            style={{
+              position: 'relative',
+              width: '100%',
+              display: 'flex',
+              flexDirection: index % 2 !== 0 ? ('row-reverse' as const) : ('row' as const),
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              minHeight: '500px',
+              marginBottom: '10%',
+              borderTop: '1px solid #666669',
+              boxSizing: 'border-box' as const,
+              paddingTop: '3%',
+              opacity: 1,
+            }}
+          >
             <div
-              key={service.id}
-              className="flex items-center gap-12"
-              style={{ flexDirection: index % 2 !== 0 ? 'row-reverse' : 'row' } as React.CSSProperties}
+              style={{
+                display: 'flex',
+                flexDirection: 'column' as const,
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                width: '40%',
+              }}
             >
-              <div style={{ width: '55%' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  className="w-full object-cover"
-                  style={{ maxHeight: '400px' }}
-                />
-              </div>
-              <div style={{ width: '45%' }}>
-                <h2
-                  className="font-classico tracking-widest text-sm mb-4"
-                  style={{ color: '#000', letterSpacing: '0.2em', fontWeight: 400 }}
-                >
-                  {service.title}
-                </h2>
-                <p
-                  className="font-classico"
-                  style={{ color: '#737373', fontWeight: 300, fontSize: '0.9rem', lineHeight: '1.8' }}
-                >
-                  {service.description}
-                </p>
-              </div>
+              <h2
+                className="font-classico"
+                style={{ fontSize: '1.1vw', textAlign: 'left', color: 'black', fontWeight: 400 }}
+              >
+                {service.title}
+              </h2>
+              <p
+                className="font-classico"
+                style={{ color: '#737373', fontWeight: 300, fontSize: '0.9rem', lineHeight: '1.8' }}
+              >
+                {service.description}
+              </p>
             </div>
-          ))}
-        </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={service.image}
+              alt={service.title}
+              style={{
+                display: 'block',
+                height: 'auto',
+                maxWidth: '40%',
+                transition: '1.0s ease',
+              }}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

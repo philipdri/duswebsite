@@ -41,7 +41,7 @@ export const projects: Project[] = [
     location: 'Oslo, Norge',
     projectName: 'The Three Temporary',
     description:
-      'Nationaltheatret er et av Norges mest ikoniske kulturbygg, men bygningens tekniske tilstand stiller arkitekter og beslutningstakere overfor et kritisk valg: rive og bygge nytt, eller bevare og transformere? Med utgangspunkt i en alternativ tilnærming til rehabilitering presenterer dette prosjektet tre temporære strukturer som letter presset på eksisterende fasiliteter, mens den historiske bygningen gjennomgår restaurering. De tre temporære strukturene er plassert i direkte tilknytning til Nationaltheatret og dets kontekst, og tilbyr fleksible rom for forestillinger, utstillinger og kulturelle arrangementer. Strukturene er utformet for rask demontering og gjenbruk, i tråd med prinsippene for sirkulær arkitektur.',
+      'Selv om Nationaltheatret er en av Norges mest ikoniske kulturinstitusjoner, har den historiske bygningen lenge vært preget av omfattende slitasje og tekniske utfordringer, noe som gjør en fullstendig renovering helt nødvendig. Dette har fått stor oppmerksomhet i media, særlig med tanke på hvordan teatret kan opprettholde sin virksomhet mens rehabiliteringsarbeidet pågår. Nationaltheatret er avhengig av inntektene fra sine teaterforestillinger og tilhørende arrangementer, og det er derfor avgjørende at institusjonen finner egnede midlertidige lokaler for å sikre fortsatt drift. En omfattende kravspesifikasjon for slike midlertidige fasiliteter er blitt fremlagt av teatret, men vi stiller oss skeptiske til dens gjennomførbarhet. Dette skyldes at kravene ser ut til å legge opp til en toppmoderne løsning, som kan være uhensiktsmessig for en midlertidig setting.\n\nVår bekymring ligger også i å ivareta Nationaltheatrets historiske verdi og unngå en utvikling hvor bygningen risikerer å bli forlatt – en skjebne som allerede har rammet flere kulturbygg i Oslo. Med dette i tankene har vi utviklet et alternativt forslag, basert på Nationaltheatrets offentlige program, som innebærer en fordeling av aktivitetene på tre midlertidige strukturer.',
     images: [
       { src: '/img/nationalteateret/render1.jpg', caption: 'Illustrasjon' },
       { src: '/img/nationalteateret/cityplan.jpg', caption: 'Situasjonsplan' },
@@ -77,13 +77,13 @@ export const projects: Project[] = [
     location: 'DANMARK',
     projectName: 'OPEN HOUSE',
     description:
-      'Open House er et konsept for et fiktivt sommerhus i Danmark, utformet med fokus på åpenhet og forbindelsen mellom inne og ute. Prosjektet utforsker hvordan arkitektur kan skape en sømløs overgang mellom det private og det naturlige landskapet. Huset er designet for å maksimere dagslys og utsikt, med store glassflater og en åpen planløsning som inviterer naturen inn.',
+      'Open House utfordrer måten vi lever på og er drevet av spørsmålet om hvor lite man egentlig behøver. Det er konseptualisert som et sommerhus i betong, designet for kunstneren Robert Motherwell. Prosjektet består av en langstrakt struktur med en lineær sekvens av rom, og er plassert på en blomstereng i Danmark. Tykke betongvegger skaper strukturen, og skyvedører i bronse former og lukker rom. Hvert rom blir formet som en separat enhet, og gir en unik, innrammet utsikt over den omliggende blomsterengen - både hvis du tar en dusj eller lager middag.',
     images: [
-      { src: '/img/sommerhus/Render.jpg', caption: 'Illustrasjon' },
+      { src: '/img/sommerhus/render.jpg', caption: 'Illustrasjon' },
       { src: '/img/sommerhus/sommerhusplan.jpg', caption: 'Plan' },
       { src: '/img/sommerhus/modellfoto.jpeg', caption: 'Modellfoto' },
     ],
-    coverImage: '/img/sommerhus/Render.jpg',
+    coverImage: '/img/sommerhus/render.jpg',
     portfolioLabel: 'SOMMERHUS I DANMARK,<br> 2022',
   },
   {
@@ -94,7 +94,7 @@ export const projects: Project[] = [
     location: 'Samnøy, Holmefjord',
     projectName: 'Tilbygg sommerhytte',
     description:
-      'Prosjektet innebærer et tilbygg til en eksisterende sommerhytte på Samnøy i Holmefjord. Tilbygget er utformet for å harmonere med den eksisterende hyttens karakter og det omkringliggende landskapet. Det nye volumet tilfører ekstra soverom og oppholdsareal, samtidig som det bevarer hyttens intime skala og tilpasning til naturen.',
+      'Prosjektet ble utviklet sommeren 2022, og er et tilbygg til en sommerhytte i Samnanger utenfor Bergen. Den eldre eksisterende hytten er plassert ved Bjørnafjorden, med utsikt mot nord. Klientene ønsket en større hytte med moderne preg, hvor alle funksjoner utenom soverom skulle flyttes til tilbygget. I tillegg ønsket de en carport, og godt med lysinnslipp og vinduer mot utsikten i nord.',
     images: [
       { src: '/img/samnoy/samnoy_plantegning.jpg', caption: 'Plantegning' },
       { src: '/img/samnoy/fasadevest.jpg', caption: 'Fasade vest' },
@@ -113,7 +113,7 @@ export const projects: Project[] = [
     location: 'BERGEN, NORGE',
     projectName: '[...] ROMMELIG SOM HAVET',
     description:
-      "Dette prosjektet er en masteroppgave som utforsker konseptet om et maritimt kunnskapssenter i Bergen. Med tittelen '[...] rommelig som havet' undersøker prosjektet hvordan arkitektur kan reflektere og formidle maritim kunnskap og kultur. Senteret er plassert ved havnefronten og integrerer utstillingslokaler, forskningsfasiliteter og offentlige rom som inviterer byens innbyggere og besøkende til å utforske den maritime arven.",
+      'Havet står for øyeblikket overfor store konsekvenser som følge av den voksende klimakrisen. Likevel ser det ut til at den offentlige bevisstheten og engasjementet for havets helse er mangelfull. Denne masteroppgaven har som mål å undersøke hvordan arkitektur kan brukes til å skape engasjement og dypere forståelse for viktige miljøutfordringer, ved å utvikle et designforslag for et nytt maritimt kunnskapsenter i Bergen.\n\nBergen er i ferd med å utvikle et nytt maritimt nabolag, med en visjon om å styrke de marine sektorene i byen ved å samle dem i tett tilknytning til hverandre. Dette prosjektet ønsker å videreføre diskusjonen ved å slå sammen Havforskningsinstituttet og Bergen Akvarium til én institusjon som fokuserer på både den utdanningsmessige og vitenskapelige betydningen av havet.',
     images: [
       { src: '/img/masteroppgave/master_render.jpeg', caption: 'Illustrasjon' },
       { src: '/img/masteroppgave/situasjonsplan.jpg', caption: 'Situasjonsplan' },

@@ -11,18 +11,19 @@ datasource db {
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  subtitle    String?
-  year        String?
-  location    String?
-  projectName String?
-  description String?
-  coverImage  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  images      ProjectImage[]
+  id               String         @id @default(cuid())
+  slug             String         @unique
+  title            String
+  shortDescription String?
+  description      String?
+  location         String?
+  year             String?
+  coverImage       String
+  published        Boolean        @default(false)
+  sortOrder        Int?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  images           ProjectImage[]
 }
 
 model ProjectImage {
@@ -30,6 +31,6 @@ model ProjectImage {
   src       String
   caption   String?
   order     Int     @default(0)
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
 }
