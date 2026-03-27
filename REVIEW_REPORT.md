@@ -14,7 +14,7 @@
 ### Biggest Strengths
 
 - Clean, well-structured Next.js App Router architecture with sensible route grouping
-- Solid auth implementation: JWT in HttpOnly cookies, protected at middleware level AND re-verified in server actions (defense-in-depth)
+- Solid auth implementation: JWT in HttpOnly cookies, protected at the proxy/edge level AND re-verified in server actions (defense-in-depth)
 - Graceful DB-unavailable fallback using static project data at every layer
 - Good separation of server vs. client components throughout
 - Comprehensive documentation (README, ARCHITECTURE_GUIDE, ADMIN_GUIDE)
@@ -59,9 +59,8 @@
 
 ### Architecture
 
-**Issue: `proxy.ts` filename should be `middleware.ts`**  
-Next.js Middleware must be in a file named `middleware.ts` at the project root. The current file is named `proxy.ts`, which means it does **not** run as middleware. Admin routes are unprotected at the middleware/edge level. The `requireAdmin()` call in server actions still protects mutations, but unauthenticated users can access admin page HTML.  
-**Severity:** Critical
+**✅ `proxy.ts` filename is correct for Next.js 16**  
+In Next.js 16, the `middleware.ts` file convention has been deprecated and renamed to `proxy.ts`. The project correctly uses `proxy.ts` at the root with a `proxy` default export. This is the expected convention per the [Next.js 16 `proxy.js` file reference](https://nextjs.org/docs/app/api-reference/file-conventions/proxy).
 
 **Issue: `force-dynamic` on public project page conflicts with `generateStaticParams`**  
 `export const dynamic = 'force-dynamic'` and `export async function generateStaticParams()` are both present in `app/(public)/prosjekter/[slug]/page.tsx`. These directives contradict each other — `force-dynamic` prevents static generation. This makes `generateStaticParams` dead code and forces full server rendering on every request.  
@@ -183,9 +182,8 @@ There is no `prisma/migrations/` directory in the repository. This means `prisma
 
 ### Documentation
 
-**Issue: ARCHITECTURE_GUIDE refers to `proxy.ts` as "Next.js Proxy (formerly Middleware)"**  
-This is misleading. The file is named `proxy.ts` but Next.js requires the middleware file to be named `middleware.ts`. This documentation describes behavior that does not actually occur.  
-**Severity:** Critical (once the file is renamed, the documentation will be correct)
+**✅ `ARCHITECTURE_GUIDE` correctly describes `proxy.ts`**  
+The guide's description of `proxy.ts` as the Next.js Proxy file is accurate for Next.js 16, where `middleware.ts` has been deprecated and replaced by `proxy.ts`.
 
 **Issue: README missing `vercel.json` mention**  
 The deployment section doesn't mention that `vercel.json` should be created, or that `prisma migrate deploy` needs to be run before every schema-changing deploy.  
@@ -214,7 +212,7 @@ These are realistic gaps for a production-ready small business website:
 
 ### Phase A — Critical Fixes
 
-1. **Rename `proxy.ts` to `middleware.ts`** — Next.js Middleware only runs if the file is named `middleware.ts`. This is a deployment blocker for route protection.
+1. ~~**Rename `proxy.ts` to `middleware.ts`**~~ — **Not needed.** In Next.js 16, `proxy.ts` is the correct filename. `middleware.ts` is deprecated and has been replaced by `proxy.ts`. The original file was correct.
 2. **Fix `onSubmit` in server component** — Move the delete form to a small `'use client'` wrapper component with the confirmation logic.
 3. **Fix edit page `notFound()` logic** — The condition should distinguish "DB unavailable" from "project not found" so the correct fallback is shown.
 4. **Add `vercel.json`** — Add `{ "buildCommand": "npx prisma generate && next build" }` to ensure Prisma client is generated on every Vercel build.
@@ -247,7 +245,7 @@ Fix all critical bugs and important security/deployment issues in the DUS Arkite
 
 ### Scope
 The agent may change:
-- `proxy.ts` → rename/recreate as `middleware.ts`
+- `proxy.ts` — already correctly named for Next.js 16 (do NOT rename)
 - `app/admin/projects/page.tsx` — extract delete form to a client component
 - `app/admin/projects/[id]/edit/page.tsx` — fix `notFound()` logic
 - `app/actions/auth.ts` — timing-safe password comparison
@@ -266,7 +264,7 @@ The agent must NOT change:
 
 ### Tasks
 
-1. Rename `proxy.ts` to `middleware.ts` (copy content, delete old file, update `ARCHITECTURE_GUIDE.md` references)
+1. ~~Rename `proxy.ts` to `middleware.ts`~~ — **Not needed.** `proxy.ts` is the correct filename in Next.js 16 (`middleware.ts` is deprecated).
 2. Extract the delete form from `admin/projects/page.tsx` into a new `'use client'` component `DeleteProjectButton.tsx` with the `confirm()` dialog
 3. Fix `notFound()` logic in `app/admin/projects/[id]/edit/page.tsx` to track whether the DB was unavailable vs. project not found
 4. Replace `password !== adminPassword` with `crypto.timingSafeEqual` in `app/actions/auth.ts`
@@ -275,7 +273,6 @@ The agent must NOT change:
 7. Remove the conflicting `generateStaticParams` export from `prosjekter/[slug]/page.tsx` (keep `force-dynamic`)
 8. Load Ionicons with `next/script` `strategy="lazyOnload"` instead of plain `<script>` tags
 9. Add `generateMetadata` to `prosjekter/[slug]/page.tsx` for project title/description
-10. Update `ARCHITECTURE_GUIDE.md` to reflect `middleware.ts` naming
 
 ### Constraints
 
@@ -294,22 +291,19 @@ You are working on the repository `philipdri/duswebsite` — a Next.js 16 + Type
 
 The codebase has been audited. Your job is to fix the identified critical bugs and important issues WITHOUT changing the design or user-facing behavior.
 
+> **Important:** This project uses Next.js 16. In Next.js 16, `middleware.ts` has been **deprecated and replaced** by `proxy.ts`. The project already has a correctly named `proxy.ts` file at the root — do NOT rename it.
+
 ---
 
 ## Priority 1 — Critical Bugs (must fix)
 
-### 1. Rename `proxy.ts` → `middleware.ts`
-Next.js Middleware ONLY runs if the file is named `middleware.ts` at the project root. The current file `proxy.ts` is never executed — admin routes are unprotected at the edge level.
-- Rename `proxy.ts` to `middleware.ts`
-- Update `ARCHITECTURE_GUIDE.md` to replace all references to `proxy.ts` with `middleware.ts`
-
-### 2. Fix delete confirmation in `app/admin/projects/page.tsx`
+### 1. Fix delete confirmation in `app/admin/projects/page.tsx`
 The page is a Server Component but uses `onSubmit` with a `confirm()` dialog. Event handlers are ignored in Server Components — the confirmation never shows, and projects can be deleted accidentally.
 - Create a new file `app/admin/projects/components/DeleteProjectButton.tsx` marked `'use client'`
 - This component renders the delete `<form>` with `action={deleteProject}`, an `onSubmit` handler using `confirm()`, and the hidden `id` input
 - Replace the inline delete form in `admin/projects/page.tsx` with `<DeleteProjectButton id={project.id} title={project.title} />`
 
-### 3. Fix `notFound()` logic in `app/admin/projects/[id]/edit/page.tsx`
+### 2. Fix `notFound()` logic in `app/admin/projects/[id]/edit/page.tsx`
 Currently: `if (project === null && id) { notFound() }` — since `id` is always truthy, this fires even when the DB is unavailable, causing a 404 instead of the "Database not connected" warning.
 - Add a `dbAvailable` boolean flag (set to `true` on success, `false` in catch)
 - Only call `notFound()` when `dbAvailable && project === null`
@@ -318,7 +312,7 @@ Currently: `if (project === null && id) { notFound() }` — since `id` is always
 
 ## Priority 2 — Security Fixes (should fix)
 
-### 4. Timing-safe password comparison in `app/actions/auth.ts`
+### 3. Timing-safe password comparison in `app/actions/auth.ts`
 Replace `password !== adminPassword` with a constant-time comparison:
 ```ts
 import { timingSafeEqual } from 'crypto'
@@ -330,7 +324,7 @@ const passwordsMatch = timingSafeEqual(
 if (!passwordsMatch) { return { error: 'Feil passord.' } }
 ```
 
-### 5. Remove `dangerouslySetInnerHTML` from `components/PortfolioItem.tsx`
+### 4. Remove `dangerouslySetInnerHTML` from `components/PortfolioItem.tsx`
 `portfolioLabel` is stored in the database and rendered with `dangerouslySetInnerHTML`. Replace with safe rendering:
 - Split `portfolioLabel` on `<br>` (various formats: `<br>`, `<br/>`, `<br />`)
 - Render as `<span>line1</span><br /><span>line2</span>` using JSX
@@ -339,7 +333,7 @@ if (!passwordsMatch) { return { error: 'Feil passord.' } }
 
 ## Priority 3 — Deployment Fixes (should fix)
 
-### 6. Add `vercel.json`
+### 5. Add `vercel.json`
 Create `/vercel.json`:
 ```json
 {
@@ -347,21 +341,21 @@ Create `/vercel.json`:
 }
 ```
 
-### 7. Remove conflicting directives in `app/(public)/prosjekter/[slug]/page.tsx`
+### 6. Remove conflicting directives in `app/(public)/prosjekter/[slug]/page.tsx`
 Both `export const dynamic = 'force-dynamic'` and `export async function generateStaticParams()` are present. These contradict each other. Remove `generateStaticParams` — the page is already `force-dynamic` and fetches from the DB at request time.
 
 ---
 
 ## Priority 4 — Performance (nice to have, implement if easy)
 
-### 8. Defer Ionicons loading in `app/layout.tsx`
+### 7. Defer Ionicons loading in `app/layout.tsx`
 Replace the two `<script>` tags (with eslint-disable comments) with Next.js `<Script>` components using `strategy="lazyOnload"`.
 
 ---
 
 ## Definition of Done
 
-- [ ] `middleware.ts` exists at root, `proxy.ts` is removed
+- [ ] `proxy.ts` exists at root (NOT renamed — `proxy.ts` is correct for Next.js 16)
 - [ ] Admin routes are protected: unauthenticated `/admin` requests redirect to `/admin/login`
 - [ ] Delete confirmation dialog appears before project deletion
 - [ ] Edit page shows "Database not connected" when DB is unavailable (not 404)
