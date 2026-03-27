@@ -13,18 +13,19 @@ export const dynamic = 'force-dynamic'
 export default async function EditProjectPage({ params }: Props) {
   const { id } = await params
   let project = null
+  let dbAvailable = false
 
   try {
     project = await prisma.project.findUnique({
       where: { id },
       include: { images: { orderBy: { order: 'asc' } } },
     })
+    dbAvailable = true
   } catch {
     // DB not connected
   }
 
-  if (project === null && id) {
-    // If DB connected but project not found
+  if (dbAvailable && project === null) {
     notFound()
   }
 

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { projects, getProjectBySlug } from "@/lib/projects";
-import { getPublishedProjectBySlug, getPublishedProjectSlugs } from "@/lib/projects-db";
+import { getPublishedProjectBySlug } from "@/lib/projects-db";
+import { getProjectBySlug } from "@/lib/projects";
 import ProjectSlideshow from "@/components/ProjectSlideshow";
 import Link from "next/link";
 
@@ -9,16 +9,6 @@ interface Props {
 }
 
 export const dynamic = 'force-dynamic';
-
-export async function generateStaticParams() {
-  try {
-    const slugs = await getPublishedProjectSlugs();
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    // Fallback to static slugs when DB is unavailable (build time)
-    return projects.map((p) => ({ slug: p.slug }));
-  }
-}
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;

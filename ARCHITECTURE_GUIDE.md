@@ -73,7 +73,7 @@
 │   └── seed.ts                 # Seed script: imports static projects into DB
 │
 ├── prisma.config.ts            # Prisma 7 config: datasource URL
-├── proxy.ts                    # Next.js Proxy (formerly Middleware): admin route protection
+├── proxy.ts                    # Next.js Proxy (replaces middleware.ts in Next.js 16): admin route protection
 │
 ├── public/
 │   └── img/                    # All static images (copied from legacy img/)
@@ -119,7 +119,7 @@ The app uses a route group `(public)` to separate public pages from admin pages:
 ## Auth Architecture
 
 1. **Login**: POST to `app/actions/auth.ts` → `login()` server action
-   - Compares submitted password with `ADMIN_PASSWORD` env variable
+   - Compares submitted password with `ADMIN_PASSWORD` env variable using constant-time comparison (`crypto.timingSafeEqual`)
    - On success: creates a signed JWT via `lib/session.ts`, stores in `HttpOnly` cookie
 2. **Protection**: `proxy.ts` runs on all `/admin/*` routes
    - Reads the `admin_session` cookie

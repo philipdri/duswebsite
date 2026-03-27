@@ -76,8 +76,14 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
         <p
           className="font-classico text-xs tracking-widest mb-4"
           style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 300 }}
-          dangerouslySetInnerHTML={{ __html: project.portfolioLabel }}
-        />
+        >
+          {project.portfolioLabel.split(/<br\s*\/?>/i).map((part, i, arr) => (
+            <span key={i}>
+              {part}
+              {i < arr.length - 1 && <br />}
+            </span>
+          ))}
+        </p>
         <Link
           href={`/prosjekter/${project.slug}`}
           className="font-classico text-xs tracking-widest hover:opacity-50 transition-opacity"
