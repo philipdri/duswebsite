@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f7f4f0;
+  overflow-x: hidden;
+  font-family: "classico-urw", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.portfolio-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
