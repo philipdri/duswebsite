@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getPublishedProjectBySlug } from "@/lib/projects-db";
 import { getProjectBySlug } from "@/lib/projects";
 import ProjectSlideshow from "@/components/ProjectSlideshow";
@@ -9,6 +10,34 @@ interface Props {
 }
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+
+  let title: string | undefined;
+  let description: string | null | undefined;
+
+  try {
+    const project = await getPublishedProjectBySlug(slug);
+    title = project?.title;
+    description = project?.description;
+  } catch {
+    const staticProject = getProjectBySlug(slug);
+    title = staticProject?.title;
+    description = staticProject?.description;
+  }
+
+  if (!title) {
+    const staticProject = getProjectBySlug(slug);
+    title = staticProject?.title;
+    description = staticProject?.description;
+  }
+
+  return {
+    title: title ? `${title} — DUS Arkitekter` : 'DUS Arkitekter',
+    description: description || 'DUS Arkitekter – arkitektur i harmoni med omgivelsene.',
+  };
+}
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
