@@ -38,12 +38,9 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
   return (
     <div
       ref={ref}
-      className="portfolio-item flex items-center gap-0 mb-0"
+      className={`portfolio-item flex items-center gap-0 mb-0 ${isReversed ? 'portfolio-item-right' : 'portfolio-item-left'}`}
       style={{
         flexDirection: isReversed ? 'row-reverse' : 'row',
-        opacity: 0,
-        transform: 'translateY(40px)',
-        transition: 'opacity 0.7s ease, transform 0.7s ease',
       }}
     >
       <Link

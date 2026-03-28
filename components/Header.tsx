@@ -3,23 +3,23 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
-interface HeaderProps {
-  variant?: "home" | "page";
-}
-
-export default function Header({ variant = "page" }: HeaderProps) {
+export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [logoAtTop, setLogoAtTop] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   useEffect(() => {
-    if (variant !== "home") return;
     const handleScroll = () => {
-      setLogoAtTop(window.scrollY > 80);
+      setScrolled(window.scrollY > 80);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [variant]);
+  }, []);
+
+  const showLogo = !isHome || scrolled;
 
   return (
     <>
@@ -27,38 +27,26 @@ export default function Header({ variant = "page" }: HeaderProps) {
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8"
         style={{
           backgroundColor: "#f7f4f0",
-          height: "10vh",
+          height: "60px",
         }}
       >
-        {variant === "home" ? (
-          <Link
-            href="/"
-            className="transition-all duration-500"
-            style={{
-              opacity: logoAtTop ? 1 : 0,
-              pointerEvents: logoAtTop ? "auto" : "none",
-            }}
-          >
-            <Image
-              src="/img/logo_lys.png"
-              alt="DUS Arkitekter Logo"
-              width={40}
-              height={40}
-              unoptimized
-            />
-          </Link>
-        ) : (
-          <Link href="/">
-            <Image
-              src="/img/logo_lys.png"
-              alt="DUS Arkitekter Logo"
-              width={40}
-              height={40}
-              unoptimized
-              style={{ width: "5%", minWidth: "30px", height: "auto" }}
-            />
-          </Link>
-        )}
+        <Link
+          href="/"
+          className="transition-all duration-500"
+          style={{
+            opacity: showLogo ? 1 : 0,
+            pointerEvents: showLogo ? "auto" : "none",
+          }}
+        >
+          <Image
+            src="/img/logo_lys.png"
+            alt="DUS Arkitekter Logo"
+            width={36}
+            height={36}
+            unoptimized
+            style={{ width: "36px", height: "auto" }}
+          />
+        </Link>
 
         <Link
           href="/"
@@ -70,31 +58,34 @@ export default function Header({ variant = "page" }: HeaderProps) {
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="flex flex-col gap-1.5 z-50 relative"
+          className="flex flex-col gap-1.5 z-50 relative p-2"
           aria-label="Toggle menu"
         >
           <span
-            className="block h-px w-6 transition-all duration-300"
+            className="block w-6 transition-all duration-300"
             style={{
               backgroundColor: "#000",
+              height: "1.5px",
               transform: menuOpen
-                ? "rotate(45deg) translate(4px, 4px)"
+                ? "rotate(45deg) translate(3px, 4px)"
                 : "none",
             }}
           />
           <span
-            className="block h-px w-6 transition-all duration-300"
+            className="block w-6 transition-all duration-300"
             style={{
               backgroundColor: "#000",
+              height: "1.5px",
               opacity: menuOpen ? 0 : 1,
             }}
           />
           <span
-            className="block h-px w-6 transition-all duration-300"
+            className="block w-6 transition-all duration-300"
             style={{
               backgroundColor: "#000",
+              height: "1.5px",
               transform: menuOpen
-                ? "rotate(-45deg) translate(4px, -4px)"
+                ? "rotate(-45deg) translate(3px, -4px)"
                 : "none",
             }}
           />

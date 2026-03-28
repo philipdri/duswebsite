@@ -2,7 +2,7 @@ import { services } from "@/lib/services";
 
 export default function TjenesterPage() {
   return (
-    <div style={{ paddingTop: '10vh', backgroundColor: '#f7f4f0', minHeight: '100vh' }}>
+    <div style={{ paddingTop: '60px', backgroundColor: '#f7f4f0', minHeight: '100vh' }}>
       <div
         style={{
           marginTop: '15%',

@@ -82,7 +82,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div
       style={{
-        paddingTop: '12vh',
+        paddingTop: '60px',
         backgroundColor: '#f7f4f0',
         minHeight: '100vh',
         paddingBottom: '80px',
