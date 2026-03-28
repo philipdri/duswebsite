@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 interface HeaderProps {
-  variant?: 'home' | 'page';
+  variant?: "home" | "page";
 }
 
-export default function Header({ variant = 'page' }: HeaderProps) {
+export default function Header({ variant = "page" }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoAtTop, setLogoAtTop] = useState(false);
 
   useEffect(() => {
-    if (variant !== 'home') return;
+    if (variant !== "home") return;
     const handleScroll = () => {
       setLogoAtTop(window.scrollY > 80);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [variant]);
 
   return (
@@ -26,17 +26,17 @@ export default function Header({ variant = 'page' }: HeaderProps) {
       <header
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8"
         style={{
-          backgroundColor: '#f7f4f0',
-          height: '10vh',
+          backgroundColor: "#f7f4f0",
+          height: "10vh",
         }}
       >
-        {variant === 'home' ? (
+        {variant === "home" ? (
           <Link
             href="/"
             className="transition-all duration-500"
             style={{
               opacity: logoAtTop ? 1 : 0,
-              pointerEvents: logoAtTop ? 'auto' : 'none',
+              pointerEvents: logoAtTop ? "auto" : "none",
             }}
           >
             <Image
@@ -55,7 +55,7 @@ export default function Header({ variant = 'page' }: HeaderProps) {
               width={40}
               height={40}
               unoptimized
-              style={{ width: '5%', minWidth: '30px' }}
+              style={{ width: "5%", minWidth: "30px", height: "auto" }}
             />
           </Link>
         )}
@@ -63,7 +63,7 @@ export default function Header({ variant = 'page' }: HeaderProps) {
         <Link
           href="/"
           className="absolute left-1/2 -translate-x-1/2 font-classico tracking-widest text-sm"
-          style={{ color: '#000', letterSpacing: '0.25em', fontWeight: 300 }}
+          style={{ color: "#000", letterSpacing: "0.25em", fontWeight: 300 }}
         >
           DUS ARKITEKTER
         </Link>
@@ -76,22 +76,26 @@ export default function Header({ variant = 'page' }: HeaderProps) {
           <span
             className="block h-px w-6 transition-all duration-300"
             style={{
-              backgroundColor: '#000',
-              transform: menuOpen ? 'rotate(45deg) translate(4px, 4px)' : 'none',
+              backgroundColor: "#000",
+              transform: menuOpen
+                ? "rotate(45deg) translate(4px, 4px)"
+                : "none",
             }}
           />
           <span
             className="block h-px w-6 transition-all duration-300"
             style={{
-              backgroundColor: '#000',
+              backgroundColor: "#000",
               opacity: menuOpen ? 0 : 1,
             }}
           />
           <span
             className="block h-px w-6 transition-all duration-300"
             style={{
-              backgroundColor: '#000',
-              transform: menuOpen ? 'rotate(-45deg) translate(4px, -4px)' : 'none',
+              backgroundColor: "#000",
+              transform: menuOpen
+                ? "rotate(-45deg) translate(4px, -4px)"
+                : "none",
             }}
           />
         </button>
@@ -100,24 +104,24 @@ export default function Header({ variant = 'page' }: HeaderProps) {
       <div
         className="fixed inset-0 z-40 flex flex-col items-center justify-center transition-all duration-500"
         style={{
-          backgroundColor: '#f7f4f0',
+          backgroundColor: "#f7f4f0",
           opacity: menuOpen ? 1 : 0,
-          pointerEvents: menuOpen ? 'auto' : 'none',
+          pointerEvents: menuOpen ? "auto" : "none",
         }}
       >
         <nav className="flex flex-col items-center gap-8">
           {[
-            { href: '/', label: 'HJEM' },
-            { href: '/tjenester', label: 'TJENESTER' },
-            { href: '/#prosjekter', label: 'PROSJEKTER' },
-            { href: '/#omoss', label: 'OM OSS' },
+            { href: "/", label: "HJEM" },
+            { href: "/tjenester", label: "TJENESTER" },
+            { href: "/#prosjekter", label: "PROSJEKTER" },
+            { href: "/#omoss", label: "OM OSS" },
           ].map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setMenuOpen(false)}
               className="font-classico tracking-widest text-2xl hover:opacity-50 transition-opacity"
-              style={{ color: '#000', fontWeight: 300, letterSpacing: '0.3em' }}
+              style={{ color: "#000", fontWeight: 300, letterSpacing: "0.3em" }}
             >
               {item.label}
             </Link>

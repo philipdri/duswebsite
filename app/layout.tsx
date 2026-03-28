@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="no">
+    <html lang="no" data-scroll-behavior="smooth">
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/vfr3hyb.css" />
       </head>
