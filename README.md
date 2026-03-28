@@ -78,6 +78,12 @@ The admin panel (`/admin`) lets owners:
 
 See [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) for full admin documentation.
 
+## Database Setup
+
+For a complete, step-by-step guide to setting up the PostgreSQL database (using the free [Neon](https://neon.tech) hosting service) and deploying to Vercel, see:
+
+👉 **[DATABASE_SETUP_GUIDE.md](./DATABASE_SETUP_GUIDE.md)**
+
 ## Deployment on Vercel
 
 1. Connect the repo to Vercel
@@ -85,6 +91,8 @@ See [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) for full admin documentation.
 3. Set build command to: `npx prisma generate && next build`
 4. Run `npx prisma migrate deploy` before first deploy
 5. Deploy
+
+See [DATABASE_SETUP_GUIDE.md](./DATABASE_SETUP_GUIDE.md) for a detailed walkthrough.
 
 ## Project Structure
 
