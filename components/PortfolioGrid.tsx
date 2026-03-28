@@ -1,14 +1,24 @@
-import { projects as staticProjects } from '@/lib/projects';
-import { getPublishedProjects } from '@/lib/projects-db';
-import PortfolioItem, { PortfolioProject } from './PortfolioItem';
+import { projects as staticProjects } from "@/lib/projects";
+import { getPublishedProjects } from "@/lib/projects-db";
+import PortfolioItem, { PortfolioProject } from "./PortfolioItem";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-function toPortfolioProject(p: { slug: string; title: string; coverImage: string; year?: string | null }): PortfolioProject {
+function toPortfolioProject(p: {
+  slug: string;
+  title: string;
+  coverImage: string;
+  year?: string | null;
+}): PortfolioProject {
   const label = p.year
     ? `${p.title.toUpperCase()},<br>${p.year}`
     : p.title.toUpperCase();
-  return { slug: p.slug, title: p.title, coverImage: p.coverImage, portfolioLabel: label };
+  return {
+    slug: p.slug,
+    title: p.title,
+    coverImage: p.coverImage,
+    portfolioLabel: label,
+  };
 }
 
 export default async function PortfolioGrid() {
@@ -28,7 +38,11 @@ export default async function PortfolioGrid() {
   }
 
   return (
-    <section id="prosjekter" className="w-full" style={{ backgroundColor: '#f7f4f0' }}>
+    <section
+      id="prosjekter"
+      className="w-auto "
+      style={{ backgroundColor: "#f7f4f0" }}
+    >
       {portfolioProjects.map((project, index) => (
         <PortfolioItem key={project.slug} project={project} index={index} />
       ))}

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { useEffect, useRef } from "react";
+import Link from "next/link";
 
 export interface PortfolioProject {
   slug: string;
@@ -23,11 +23,11 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('portfolio-visible');
+            entry.target.classList.add("portfolio-visible");
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -38,15 +38,16 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
   return (
     <div
       ref={ref}
-      className={`portfolio-item flex items-center gap-0 mb-0 ${isReversed ? 'portfolio-item-right' : 'portfolio-item-left'}`}
+      className={` margintop:50 portfolio-item flex items-center  ${isReversed ? "portfolio-item-right" : "portfolio-item-left"}`}
       style={{
-        flexDirection: isReversed ? 'row-reverse' : 'row',
+        flexDirection: isReversed ? "row-reverse" : "row",
+        marginTop: "50px",
       }}
     >
       <Link
         href={`/prosjekter/${project.slug}`}
         className="block relative overflow-hidden group"
-        style={{ width: '60%', aspectRatio: '4/3' }}
+        style={{ width: "60%", aspectRatio: "4/3" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -56,23 +57,23 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
         />
         <div
           className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ backgroundColor: 'rgba(247,244,240,0.7)' }}
+          style={{ backgroundColor: "rgba(247,244,240,0.7)" }}
         >
           <span
             className="font-classico tracking-widest text-sm"
-            style={{ color: '#000', letterSpacing: '0.25em', fontWeight: 300 }}
+            style={{ color: "#000", letterSpacing: "0.25em", fontWeight: 300 }}
           >
             SE PROSJEKT
           </span>
         </div>
       </Link>
       <div
-        className="flex flex-col justify-center px-8 py-8"
-        style={{ width: '40%' }}
+        className="flex flex-col justify-center px-50 py-8 "
+        style={{ width: "40%" }}
       >
         <p
           className="font-classico text-xs tracking-widest mb-4"
-          style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 300 }}
+          style={{ color: "#737373", letterSpacing: "0.2em", fontWeight: 300 }}
         >
           {project.portfolioLabel.split(/<br\s*\/?>/i).map((part, i, arr) => (
             <span key={i}>
@@ -84,7 +85,7 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
         <Link
           href={`/prosjekter/${project.slug}`}
           className="font-classico text-xs tracking-widest hover:opacity-50 transition-opacity"
-          style={{ color: '#000', letterSpacing: '0.25em', fontWeight: 300 }}
+          style={{ color: "#000", letterSpacing: "0.25em", fontWeight: 300 }}
         >
           SE PROSJEKT →
         </Link>

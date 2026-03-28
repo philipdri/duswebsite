@@ -24,7 +24,7 @@ export default function Header() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8"
+        className=" w-full top-0 left-0 right-0 z-50 flex items-center justify-between px-8"
         style={{
           backgroundColor: "#f7f4f0",
           height: "60px",
