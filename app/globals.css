@@ -12,7 +12,20 @@ body {
   box-sizing: border-box;
 }
 
+/* Portfolio slide-in animations */
+.portfolio-item-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.portfolio-item-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
 .portfolio-visible {
   opacity: 1 !important;
-  transform: translateY(0) !important;
+  transform: translateX(0) !important;
 }

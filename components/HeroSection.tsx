@@ -2,28 +2,37 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+
+const FADE_SPEED = 1.6;
+const MIN_LOGO_SCALE = 0.25;
+const SCALE_SPEED = 0.75;
 
 export default function HeroSection() {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 80);
+      const heroHeight = heroRef.current?.offsetHeight || window.innerHeight;
+      const progress = Math.min(1, window.scrollY / (heroHeight * 0.55));
+      setScrollProgress(progress);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const logoOpacity = Math.max(0, 1 - scrollProgress * FADE_SPEED);
+  const logoScale = Math.max(MIN_LOGO_SCALE, 1 - scrollProgress * SCALE_SPEED);
+  const logoTranslateY = -scrollProgress * 40;
 
   return (
     <div
       ref={heroRef}
       className="relative flex items-center justify-center"
       style={{
-        height: '95vh',
-        width: '90%',
-        margin: '10vh auto 0',
+        height: 'calc(100vh - 60px)',
+        width: '100%',
+        marginTop: '60px',
         overflow: 'hidden',
       }}
     >
@@ -37,23 +46,23 @@ export default function HeroSection() {
           backgroundAttachment: 'fixed',
         }}
       />
-      <Link
-        href="/"
-        className="relative z-10 transition-all duration-700"
+      <div
+        className="relative z-10"
         style={{
-          opacity: scrolled ? 0 : 1,
-          transform: scrolled ? 'translateY(-20px)' : 'translateY(0)',
+          opacity: logoOpacity,
+          transform: `scale(${logoScale}) translateY(${logoTranslateY}px)`,
+          willChange: 'opacity, transform',
         }}
       >
         <Image
           src="/img/logo_lys.png"
           alt="DUS Arkitekter"
-          width={100}
-          height={100}
+          width={120}
+          height={120}
           unoptimized
-          style={{ width: '100px', height: 'auto' }}
+          style={{ width: '120px', height: 'auto' }}
         />
-      </Link>
+      </div>
     </div>
   );
 }

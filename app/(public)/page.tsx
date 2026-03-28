@@ -9,7 +9,7 @@ export default function Home() {
       <HeroSection />
       <section
         className="px-8 py-20 max-w-3xl mx-auto"
-        style={{ paddingTop: '10vh' }}
+        style={{ paddingTop: '80px' }}
       >
         <p
           className="font-classico leading-relaxed mb-8"
