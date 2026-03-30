@@ -27,7 +27,6 @@ export default function Footer() {
             style={{ color: "#1a1a1a" }}
             aria-label="Instagram"
           >
-            {/* @ts-expect-error ion-icon is a custom web component */}
             <ion-icon
               name="logo-instagram"
               style={{ fontSize: "22px" }}
@@ -41,7 +40,6 @@ export default function Footer() {
             style={{ color: "#1a1a1a" }}
             aria-label="LinkedIn"
           >
-            {/* @ts-expect-error ion-icon is a custom web component */}
             <ion-icon
               name="logo-linkedin"
               style={{ fontSize: "22px" }}

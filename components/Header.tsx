@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -8,8 +8,15 @@ import { usePathname } from "next/navigation";
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const links = [
+    { href: "/", label: "HJEM" },
+    { href: "/tjenester", label: "TJENESTER" },
+    { href: "/#prosjekter", label: "PROSJEKTER" },
+    { href: "/#omoss", label: "OM OSS" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +25,47 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
+      if (!menuRef.current) {
+        return;
+      }
+
+      const target = event.target as Node;
+      if (!menuRef.current.contains(target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, []);
+
+  const isLinkActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+    if (href.startsWith("/#")) {
+      return pathname === "/";
+    }
+    return pathname === href;
+  };
 
   const showLogo = !isHome || scrolled;
 
@@ -56,69 +104,96 @@ export default function Header() {
           DUS ARKITEKTER
         </Link>
 
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="flex flex-col gap-1.5 z-50 relative p-2"
-          aria-label="Toggle menu"
+        <div
+          key={pathname ?? "mobile-nav"}
+          className="relative z-[60] shrink-0"
+          ref={menuRef}
         >
-          <span
-            className="block w-6 transition-all duration-300"
+          <button
+            type="button"
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="inline-flex h-16 w-16 items-center justify-center transition-opacity hover:opacity-70"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav-panel"
+            aria-label={menuOpen ? "Lukk meny" : "Apne meny"}
             style={{
-              backgroundColor: "#000",
-              height: "1.5px",
-              transform: menuOpen
-                ? "rotate(45deg) translate(3px, 4px)"
-                : "none",
+              color: "#000",
+              backgroundColor: "transparent",
+              border: "none",
+              padding: 0,
             }}
-          />
-          <span
-            className="block w-6 transition-all duration-300"
-            style={{
-              backgroundColor: "#000",
-              height: "1.5px",
-              opacity: menuOpen ? 0 : 1,
-            }}
-          />
-          <span
-            className="block w-6 transition-all duration-300"
-            style={{
-              backgroundColor: "#000",
-              height: "1.5px",
-              transform: menuOpen
-                ? "rotate(-45deg) translate(3px, -4px)"
-                : "none",
-            }}
-          />
-        </button>
-      </header>
-
-      <div
-        className="fixed inset-0 z-40 flex flex-col items-center justify-center transition-all duration-500"
-        style={{
-          backgroundColor: "#f7f4f0",
-          opacity: menuOpen ? 1 : 0,
-          pointerEvents: menuOpen ? "auto" : "none",
-        }}
-      >
-        <nav className="flex flex-col items-center gap-8">
-          {[
-            { href: "/", label: "HJEM" },
-            { href: "/tjenester", label: "TJENESTER" },
-            { href: "/#prosjekter", label: "PROSJEKTER" },
-            { href: "/#omoss", label: "OM OSS" },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMenuOpen(false)}
-              className="font-classico tracking-widest text-2xl hover:opacity-50 transition-opacity"
-              style={{ color: "#000", fontWeight: 300, letterSpacing: "0.3em" }}
+          >
+            <span
+              className="flex flex-col items-center justify-center gap-1.5"
+              aria-hidden
             >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
+              <span
+                className="block w-10 transition-all duration-300"
+                style={{
+                  backgroundColor: "#111",
+                  height: "2px",
+                  transform: menuOpen
+                    ? "translateY(6px) rotate(45deg)"
+                    : "none",
+                }}
+              />
+              <span
+                className="block w-10 transition-all duration-300"
+                style={{
+                  backgroundColor: "#111",
+                  height: "2px",
+                  opacity: menuOpen ? 0 : 1,
+                }}
+              />
+              <span
+                className="block w-10 transition-all duration-300"
+                style={{
+                  backgroundColor: "#111",
+                  height: "2px",
+                  transform: menuOpen
+                    ? "translateY(-6px) rotate(-45deg)"
+                    : "none",
+                }}
+              />
+            </span>
+            <span className="sr-only font-classico" style={{ fontWeight: 300 }}>
+              {menuOpen ? "Lukk meny" : "Apne meny"}
+            </span>
+          </button>
+
+          {menuOpen ? (
+            <div
+              id="mobile-nav-panel"
+              className="fixed right-4 top-[68px] z-50 rounded-xl border p-2 shadow-lg"
+              style={{
+                borderColor: "#d4cfc8",
+                backgroundColor: "#f7f4f0",
+                width: "min(18rem, calc(100vw - 2rem))",
+                maxWidth: "calc(100vw - 2rem)",
+              }}
+            >
+              <nav className="flex flex-col gap-1">
+                {links.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-lg px-3 py-2 text-sm font-classico tracking-widest transition-opacity hover:opacity-60"
+                    style={{
+                      color: isLinkActive(item.href) ? "#6f6e68" : "#000",
+                      letterSpacing: "0.16em",
+                      fontWeight: isLinkActive(item.href) ? 400 : 300,
+                    }}
+                    onClick={() => setMenuOpen(false)}
+                    aria-current={isLinkActive(item.href) ? "page" : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          ) : null}
+        </div>
+      </header>
     </>
   );
 }
