@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   title: "Dus Arkitekter",
   description: "DUS Arkitekter – arkitektur i harmoni med omgivelsene.",
   icons: {
-    icon: "/img/logo_lys.png",
+    icon: "/icon.png",
+    apple: "/icon.png",
   },
 };
 
