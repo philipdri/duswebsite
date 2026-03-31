@@ -82,11 +82,18 @@ Each project can have multiple gallery images. For each image:
 
 ### Image uploads
 
-In this phase, images are referenced by URL/path. To add a project image:
-1. Place the image file in `public/img/your-project/`
-2. Use the path `/img/your-project/filename.jpg` in the admin form
+Images can be uploaded directly from the admin form using the **↑ LAST OPP** button next to each image field.
 
-Future upgrade: a file upload component can be added to the admin forms, storing files in Vercel Blob, Cloudinary, or similar services.
+- In **production** (Vercel), images are stored in [Vercel Blob](https://vercel.com/docs/storage/vercel-blob). A `BLOB_READ_WRITE_TOKEN` environment variable must be set (see the Environment Variables section below).
+- In **local development**, images are saved to `public/uploads/` when `BLOB_READ_WRITE_TOKEN` is not set.
+
+You can also type a URL/path directly into the image field:
+- Local path: `/img/your-project/filename.jpg`
+- External URL: `https://example.com/image.jpg`
+
+To set up Vercel Blob for production:
+1. In your Vercel project dashboard, go to **Storage** and create a new Blob store.
+2. Copy the `BLOB_READ_WRITE_TOKEN` and add it to your Vercel environment variables.
 
 ### Deleting projects
 
@@ -161,6 +168,10 @@ ADMIN_PASSWORD="your-secure-password"
 
 # JWT signing secret (min 32 chars, random)
 ADMIN_SESSION_SECRET="your-random-32-char-secret-string"
+
+# Vercel Blob token (required for image uploads in production)
+# Create a Blob store in the Vercel project dashboard and add the token here
+BLOB_READ_WRITE_TOKEN="vercel_blob_rw_..."
 ```
 
 ---
@@ -235,7 +246,6 @@ After provisioning:
 
 ## Future Improvements
 
-- **Image uploads**: Replace URL input with a file uploader using Vercel Blob or Cloudinary
 - **Multiple admin users**: Add a `User` model and bcrypt-hashed passwords
 - **Audit log**: Track who changed what and when
 - **Drag-and-drop reorder**: Visual reordering of projects and gallery images
