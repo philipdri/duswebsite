@@ -10,16 +10,16 @@ export default function TjenesterPage() {
           paddingRight: '7%',
           width: '85%',
           display: 'flex',
-          flexDirection: 'row' as const,
+          flexDirection: 'row',
           justifyContent: 'space-between',
           alignContent: 'flex-start',
-          boxSizing: 'border-box' as const,
+          boxSizing: 'border-box',
         }}
       >
         <p
           className="font-classico"
           style={{
-            fontWeight: 150,
+            fontWeight: 200,
             lineHeight: '1.4',
             color: '#000000',
             fontSize: 'clamp(10px, 2.5vw, 30px)',
@@ -38,7 +38,7 @@ export default function TjenesterPage() {
           marginTop: '10%',
           marginBottom: '10%',
           display: 'flex',
-          flexDirection: 'column' as const,
+          flexDirection: 'column',
           gap: '0',
         }}
       >
@@ -49,13 +49,13 @@ export default function TjenesterPage() {
               position: 'relative',
               width: '100%',
               display: 'flex',
-              flexDirection: index % 2 !== 0 ? ('row-reverse' as const) : ('row' as const),
+              flexDirection: index % 2 !== 0 ? 'row-reverse' : 'row',
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               minHeight: '500px',
               marginBottom: '10%',
               borderTop: '1px solid #666669',
-              boxSizing: 'border-box' as const,
+              boxSizing: 'border-box',
               paddingTop: '3%',
               opacity: 1,
             }}
@@ -63,7 +63,7 @@ export default function TjenesterPage() {
             <div
               style={{
                 display: 'flex',
-                flexDirection: 'column' as const,
+                flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'flex-start',
                 width: '40%',
