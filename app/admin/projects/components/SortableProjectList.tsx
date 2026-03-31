@@ -26,10 +26,12 @@ const headStyle = {
 } as const
 
 export default function SortableProjectList({ projects: initialProjects }: { projects: ProjectRow[] }) {
+  const router = useRouter()
   const [projects, setProjects] = useState(initialProjects)
   const [saving, setSaving] = useState(false)
   const dragId = useRef<string | null>(null)
   const [dragOverId, setDragOverId] = useState<string | null>(null)
+  const [, startTransition] = useTransition()
 
   function handleDragStart(id: string) {
     dragId.current = id
@@ -137,24 +139,31 @@ export default function SortableProjectList({ projects: initialProjects }: { pro
                 <td style={cellStyle}>{project.year || '—'}</td>
                 <td style={cellStyle}>{project.location || '—'}</td>
                 <td style={{ padding: '12px 16px' }}>
-                  <form action={togglePublished}>
-                    <input type="hidden" name="id" value={project.id} />
-                    <input type="hidden" name="published" value="false" />
-                    <button
-                      type="submit"
-                      style={{
-                        padding: '3px 10px',
-                        fontSize: '0.65rem',
-                        letterSpacing: '0.1em',
-                        border: '1px solid #22c55e',
-                        backgroundColor: '#f0fdf4',
-                        color: '#16a34a',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      PUBLISERT
-                    </button>
-                  </form>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Optimistically remove from local list
+                      setProjects((prev) => prev.filter((p) => p.id !== project.id))
+                      startTransition(async () => {
+                        const fd = new FormData()
+                        fd.set('id', project.id)
+                        fd.set('published', 'false')
+                        await togglePublished(fd)
+                        router.refresh()
+                      })
+                    }}
+                    style={{
+                      padding: '3px 10px',
+                      fontSize: '0.65rem',
+                      letterSpacing: '0.1em',
+                      border: '1px solid #22c55e',
+                      backgroundColor: '#f0fdf4',
+                      color: '#16a34a',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    PUBLISERT
+                  </button>
                 </td>
                 <td style={cellStyle}>{project.imageCount}</td>
                 <td style={{ padding: '12px 16px' }}>

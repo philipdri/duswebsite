@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
-import { togglePublished } from './actions'
 import DeleteProjectButton from './components/DeleteProjectButton'
 import SortableProjectList from './components/SortableProjectList'
+import PublishButton from './components/PublishButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -112,7 +112,7 @@ export default async function AdminProjectsPage() {
                 Ingen publiserte prosjekter ennå. Publiser et utkast for å legge det til i portfolioen.
               </div>
             ) : (
-              <SortableProjectList projects={published.map(toRow)} />
+              <SortableProjectList key={published.map((p) => p.id).join(',')} projects={published.map(toRow)} />
             )}
           </div>
 
@@ -178,24 +178,7 @@ export default async function AdminProjectsPage() {
                         <td style={cellStyle}>{project.year || '—'}</td>
                         <td style={cellStyle}>{project.location || '—'}</td>
                         <td style={{ padding: '12px 16px' }}>
-                          <form action={togglePublished}>
-                            <input type="hidden" name="id" value={project.id} />
-                            <input type="hidden" name="published" value="true" />
-                            <button
-                              type="submit"
-                              style={{
-                                padding: '3px 10px',
-                                fontSize: '0.65rem',
-                                letterSpacing: '0.1em',
-                                border: '1px solid #e5e5e5',
-                                backgroundColor: '#f9f9f9',
-                                color: '#737373',
-                                cursor: 'pointer',
-                              }}
-                            >
-                              UTKAST
-                            </button>
-                          </form>
+                          <PublishButton id={project.id} />
                         </td>
                         <td style={cellStyle}>{project.images.length}</td>
                         <td style={{ padding: '12px 16px' }}>
