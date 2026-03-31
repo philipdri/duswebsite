@@ -10,28 +10,16 @@ export default function Footer() {
       }}
       className="mt-0 px-6 sm:px-10 md:px-14"
     >
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-3 items-end justify-items-center gap-8">
-        <div className="flex w-full items-end justify-center">
-          <p
-            className="font-classico text-xs tracking-widest"
-            style={{
-              color: "#aaa9a3",
-
-              fontWeight: 300,
-            }}
-          >
-            {"\u00A9"} {new Date().getFullYear()} DUS ARKITEKTER AS
-          </p>
-        </div>
-
-        <div className="flex flex-col items-center gap-4 text-center">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-3 items-center sm:items-end justify-items-center gap-6 sm:gap-8">
+        {/* Kontakt Oss – center column on desktop, first on mobile */}
+        <div className="flex flex-col items-center gap-4 text-center order-1 sm:order-2">
           <h2
             className="font-classico tracking-widest"
             style={{
               color: "#858589",
               letterSpacing: "0.25em",
               fontWeight: 500,
-              fontSize: " 1rem",
+              fontSize: "1rem",
             }}
           >
             KONTAKT OSS
@@ -52,10 +40,8 @@ export default function Footer() {
           </a>
         </div>
 
-        <div
-          className="flex w-full items-center justify-center gap-20"
-          style={{ gap: "10px" }}
-        >
+        {/* Social icons – right column on desktop, middle on mobile */}
+        <div className="flex w-full items-center justify-center gap-2.5 order-2 sm:order-3">
           <a
             href="https://www.instagram.com/dusarkitekter"
             target="_blank"
@@ -82,6 +68,19 @@ export default function Footer() {
               style={{ fontSize: "30px" }}
             ></ion-icon>
           </a>
+        </div>
+
+        {/* Copyright – left column on desktop, last on mobile */}
+        <div className="flex w-full items-end justify-center order-3 sm:order-1">
+          <p
+            className="font-classico text-xs tracking-widest"
+            style={{
+              color: "#aaa9a3",
+              fontWeight: 300,
+            }}
+          >
+            {"\u00A9"} {new Date().getFullYear()} DUS ARKITEKTER AS
+          </p>
         </div>
       </div>
     </footer>
