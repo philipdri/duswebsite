@@ -14,6 +14,10 @@ export async function login(
     return { error: 'Server misconfiguration: ADMIN_PASSWORD not set.' }
   }
 
+  if (!process.env.ADMIN_SESSION_SECRET) {
+    return { error: 'Server misconfiguration: ADMIN_SESSION_SECRET not set.' }
+  }
+
   if (!password) {
     return { error: 'Feil passord.' }
   }

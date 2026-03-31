@@ -58,7 +58,7 @@ Neon generates the username and password for you — copy the string exactly as 
 
 ## Step 2 — Configure Vercel Environment Variables
 
-This step tells the site how to connect to your database.
+This step tells the site how to connect to your database and protects your admin panel.
 
 1. Go to your project in the [Vercel dashboard](https://vercel.com/dashboard).
 2. Click **Settings** → **Environment Variables**.
@@ -69,6 +69,8 @@ This step tells the site how to connect to your database.
 | `DATABASE_URL` | The connection string you copied from Neon (see Step 1) |
 | `ADMIN_PASSWORD` | A secure password for the admin panel (you choose this) |
 | `ADMIN_SESSION_SECRET` | A long random string, at least 32 characters (see note below) |
+
+> **Important:** `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` are **not** set by the Neon integration — you must add them manually. Without both variables, you cannot log in to the admin panel.
 
 #### Generating ADMIN_SESSION_SECRET
 
@@ -87,15 +89,20 @@ Go to [https://generate-secret.vercel.app/32](https://generate-secret.vercel.app
 
 ---
 
-## Step 3 — Connect Neon to Vercel (Optional but Recommended)
+## Step 3 — Connect Neon to Vercel (Recommended if you used the Neon integration)
 
-Vercel and Neon have a native integration that makes things even easier.
+If you connected Neon to your Vercel project via the Neon integration (Vercel → **Storage** → **Connect Store** → **Neon**), Neon automatically sets several environment variables in Vercel for you, including:
 
-1. In Vercel → **Storage** → **Connect Store**.
-2. Click **Neon** → **Connect**.
-3. Follow the prompts to authorise and select your Neon project.
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | Pooled (pgbouncer) connection — used by the app at runtime |
+| `DATABASE_URL_UNPOOLED` | Direct connection — used by Prisma migrations during the build |
 
-This automatically keeps your `DATABASE_URL` in sync. If you skip this step, manually pasting the connection string in Step 2 is equally fine.
+The site's code and build process are configured to use both automatically:
+- **Runtime queries** (`lib/db.ts`) use `DATABASE_URL` (pooled).
+- **Migrations** (`prisma.config.ts`, run during Vercel build) use `DATABASE_URL_UNPOOLED` when available, falling back to `DATABASE_URL`.
+
+If you **skipped** the Neon integration and pasted `DATABASE_URL` manually (Step 2), that is equally fine. In that case, paste the **direct** connection string (without pgbouncer) so that migrations work correctly.
 
 ---
 
@@ -180,34 +187,28 @@ If you prefer to start fresh and add projects via the admin panel, you can skip 
 
 ### Configure the build command
 
-In Vercel → **Settings** → **Build & Development Settings**, set:
+The `vercel.json` file in the repository already sets the correct build command automatically:
 
-| Setting | Value |
-|---|---|
-| **Build Command** | `npx prisma generate && next build` |
-| **Framework Preset** | Next.js |
+```
+npx prisma migrate deploy && npx prisma generate && next build
+```
 
-The `vercel.json` file in the repository already sets the build command automatically, so this may already be configured.
+This does three things on every Vercel deploy:
+1. **`prisma migrate deploy`** — applies any pending database migrations (creates tables on first deploy, no-op if already up to date)
+2. **`prisma generate`** — generates the Prisma client used by the app
+3. **`next build`** — builds the Next.js app
+
+> You do not need to change anything in Vercel's build settings — the `vercel.json` file handles it.
 
 ### First deploy
 
-Push your code (or trigger a new deployment in the Vercel dashboard). Vercel will:
+Make sure you have completed Steps 2–4 (environment variables and database tables) before deploying, or trigger a redeploy after adding the environment variables. Vercel will:
 
-1. Run `npx prisma generate`
-2. Build the Next.js app
-3. Deploy to production
+1. Apply database migrations (creates `Project` and `ProjectImage` tables)
+2. Generate the Prisma client
+3. Build and deploy the Next.js app
 
 After the deployment succeeds, your site is live at your Vercel URL (e.g. `https://duswebsite.vercel.app` or your custom domain).
-
-### Run migrations in production (required for future schema changes)
-
-If you ever update `prisma/schema.prisma` (only done by a developer), deploy the migration with:
-
-```bash
-npx prisma migrate deploy
-```
-
-This applies pending migrations to the production database without losing data. For the initial setup, the tables are already created from Step 4d.
 
 ---
 
@@ -246,7 +247,7 @@ Use this as a quick reference:
 - [ ] Run `npx prisma generate`
 - [ ] Run `npx prisma migrate dev --name init` to create database tables
 - [ ] (Optional) Run `npx prisma db seed` to load existing projects
-- [ ] Deploy to Vercel (verify build command is `npx prisma generate && next build`)
+- [ ] Deploy to Vercel (build command `npx prisma migrate deploy && npx prisma generate && next build` is set automatically via `vercel.json`)
 - [ ] Log in at `/admin` and verify the admin panel works
 
 ---
@@ -259,13 +260,18 @@ Use this as a quick reference:
 - In Neon, go to your project → **Connection Details** and copy the string again.
 - Make sure `?sslmode=require` is included at the end of the URL.
 
-### "Invalid credentials" on admin login
+### "Server misconfiguration" error on admin login
+
+- You are missing one or both of the required admin environment variables. In Vercel → **Settings** → **Environment Variables**, make sure both `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` are set. These are **not** added by the Neon integration — you must add them manually.
+- After adding them, trigger a new deployment in Vercel so the app picks up the new values.
+
+### Wrong password / can't log in
 
 - The `ADMIN_PASSWORD` in Vercel must exactly match what you type at `/admin/login`. There are no password resets — if you forget it, update the `ADMIN_PASSWORD` environment variable in Vercel and redeploy.
 
 ### "Prisma Client not generated"
 
-- Make sure the Vercel build command is `npx prisma generate && next build` (not just `next build`). Check Vercel → **Settings** → **Build & Development Settings**.
+- The `vercel.json` in this repository sets the build command automatically. If you overrode the build command in Vercel's dashboard, restore it to: `npx prisma migrate deploy && npx prisma generate && next build`.
 
 ### The public site shows no projects
 
@@ -274,7 +280,8 @@ Use this as a quick reference:
 
 ### Database tables don't exist after deploy
 
-- This happens if `npx prisma migrate deploy` was never run. Run it locally (with your `.env` pointing to the production database) or use the Neon dashboard SQL editor to verify the tables exist.
+- This is handled automatically by the `prisma migrate deploy` step in the build command. If tables are still missing, check Vercel's deployment logs for migration errors.
+- You can also verify tables exist using the Neon dashboard → **SQL Editor**: run `\dt` or `SELECT * FROM "Project" LIMIT 1;`.
 
 ---
 
