@@ -54,7 +54,6 @@ export default async function EditProjectPage({ params }: Props) {
             year: project.year,
             coverImage: project.coverImage,
             published: project.published,
-            sortOrder: project.sortOrder,
             images: project.images.map((img) => ({ src: img.src, caption: img.caption || '' })),
           }}
           action={updateProject}

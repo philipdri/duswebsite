@@ -17,7 +17,6 @@ interface Project {
   year: string | null
   coverImage: string
   published: boolean
-  sortOrder: number | null
   images: ProjectImage[]
 }
 
@@ -142,7 +141,7 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
         />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 20px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
         <div style={fieldStyle}>
           <label style={labelStyle}>STED</label>
           <input name="location" defaultValue={project?.location || ''} style={inputStyle} placeholder="Bergen, Norge" />
@@ -150,16 +149,6 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
         <div style={fieldStyle}>
           <label style={labelStyle}>ÅRSTALL</label>
           <input name="year" defaultValue={project?.year || ''} style={inputStyle} placeholder="2024" />
-        </div>
-        <div style={fieldStyle}>
-          <label style={labelStyle}>SORTERINGSREKKEFØLGE</label>
-          <input
-            name="sortOrder"
-            type="number"
-            defaultValue={project?.sortOrder ?? ''}
-            style={inputStyle}
-            placeholder="0"
-          />
         </div>
       </div>
 
