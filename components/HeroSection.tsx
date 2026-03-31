@@ -9,13 +9,13 @@ export default function HeroSection() {
       }}
     >
       <div
+        className="hero-bg"
         style={{
           position: "absolute",
           inset: 0,
           backgroundImage: "url(/img/skygge_glød.png)",
           backgroundSize: "cover",
           backgroundPosition: "center top",
-          backgroundAttachment: "fixed",
         }}
       />
     </div>

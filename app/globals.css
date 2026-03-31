@@ -31,6 +31,17 @@ body {
   box-sizing: border-box;
 }
 
+/* Hero background – fixed attachment for desktop, scroll for mobile */
+.hero-bg {
+  background-attachment: scroll;
+}
+
+@media (hover: hover) {
+  .hero-bg {
+    background-attachment: fixed;
+  }
+}
+
 /* Portfolio slide-in animations */
 .portfolio-item-left {
   opacity: 0;
