@@ -21,7 +21,24 @@ export async function togglePublished(formData: FormData) {
   await requireAdmin()
   const id = formData.get('id') as string
   const published = formData.get('published') === 'true'
-  await prisma.project.update({ where: { id }, data: { published } })
+
+  let sortOrder: number | null = null
+  if (published) {
+    const result = await prisma.project.aggregate({
+      where: { published: true },
+      _max: { sortOrder: true },
+    })
+    sortOrder = (result._max.sortOrder ?? -1) + 1
+  }
+
+  await prisma.project.update({ where: { id }, data: { published, sortOrder } })
+  revalidatePath('/admin/projects')
+  revalidatePath('/')
+}
+
+export async function reorderProjects(ids: string[]): Promise<void> {
+  await requireAdmin()
+  await prisma.$transaction(ids.map((id, index) => prisma.project.update({ where: { id }, data: { sortOrder: index } })))
   revalidatePath('/admin/projects')
   revalidatePath('/')
 }
@@ -71,8 +88,15 @@ export async function createProject(
     return { error: `Slug "${slug}" er allerede i bruk.` }
   }
 
-  const sortOrderRaw = formData.get('sortOrder') as string
-  const sortOrder = sortOrderRaw ? parseInt(sortOrderRaw) : null
+  const isPublished = formData.get('published') === 'on'
+  let sortOrder: number | null = null
+  if (isPublished) {
+    const result = await prisma.project.aggregate({
+      where: { published: true },
+      _max: { sortOrder: true },
+    })
+    sortOrder = (result._max.sortOrder ?? -1) + 1
+  }
 
   const images = parseImages(formData)
 
@@ -85,7 +109,7 @@ export async function createProject(
       location: (formData.get('location') as string | null)?.trim() || null,
       year: (formData.get('year') as string | null)?.trim() || null,
       coverImage,
-      published: formData.get('published') === 'on',
+      published: isPublished,
       sortOrder,
       images: {
         create: images,
@@ -123,8 +147,20 @@ export async function updateProject(
     return { error: `Slug "${slug}" er allerede i bruk av et annet prosjekt.` }
   }
 
-  const sortOrderRaw = formData.get('sortOrder') as string
-  const sortOrder = sortOrderRaw ? parseInt(sortOrderRaw) : null
+  const current = await prisma.project.findUnique({ where: { id }, select: { published: true, sortOrder: true } })
+  const isPublished = formData.get('published') === 'on'
+
+  let sortOrder: number | null = current?.sortOrder ?? null
+  if (isPublished && !current?.published) {
+    // Project is being published for the first time — append to end of portfolio
+    const result = await prisma.project.aggregate({
+      where: { published: true },
+      _max: { sortOrder: true },
+    })
+    sortOrder = (result._max.sortOrder ?? -1) + 1
+  } else if (!isPublished) {
+    sortOrder = null
+  }
 
   const images = parseImages(formData)
 
@@ -141,7 +177,7 @@ export async function updateProject(
         location: (formData.get('location') as string | null)?.trim() || null,
         year: (formData.get('year') as string | null)?.trim() || null,
         coverImage,
-        published: formData.get('published') === 'on',
+        published: isPublished,
         sortOrder,
         images: {
           create: images,
