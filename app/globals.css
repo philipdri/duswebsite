@@ -1,6 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-dus-bg: #f7f4f0;
+  --color-dus-dark: #171717;
+  --color-dus-text: #000000;
+  --color-dus-muted: #737373;
+  --color-dus-border: #666669;
+  --font-classico: "classico-urw", sans-serif;
+}
 
 :root {
   --header-height: 100px;
