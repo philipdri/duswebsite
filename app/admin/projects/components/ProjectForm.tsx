@@ -2,6 +2,30 @@
 import { useActionState, useState } from 'react'
 import type { ProjectFormState } from '../actions'
 
+async function uploadImageFile(file: File): Promise<{ url: string } | { error: string }> {
+  try {
+    const fd = new FormData()
+    fd.append('file', file)
+    const res = await fetch('/api/upload', { method: 'POST', body: fd })
+    const data = await res.json()
+    if (!res.ok) return { error: data.error || 'Opplasting feilet.' }
+    return { url: data.url as string }
+  } catch {
+    return { error: 'Nettverksfeil under opplasting. Prøv igjen.' }
+  }
+}
+
+function isSafeImageUrl(url: string): boolean {
+  if (!url) return false
+  if (url.startsWith('/')) return true
+  try {
+    const parsed = new URL(url)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 interface ProjectImage {
   src: string
   caption: string
@@ -55,6 +79,36 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
   const [images, setImages] = useState<ProjectImage[]>(
     project?.images?.length ? project.images : [{ src: '', caption: '' }],
   )
+  const [coverImageUrl, setCoverImageUrl] = useState(project?.coverImage || '')
+  const [uploadingCover, setUploadingCover] = useState(false)
+  const [uploadingGallery, setUploadingGallery] = useState<Record<number, boolean>>({})
+  const [uploadError, setUploadError] = useState<string | null>(null)
+
+  async function handleCoverUpload(file: File | undefined) {
+    if (!file) return
+    setUploadError(null)
+    setUploadingCover(true)
+    const result = await uploadImageFile(file)
+    setUploadingCover(false)
+    if ('error' in result) {
+      setUploadError(result.error)
+    } else {
+      setCoverImageUrl(result.url)
+    }
+  }
+
+  async function handleGalleryUpload(index: number, file: File | undefined) {
+    if (!file) return
+    setUploadError(null)
+    setUploadingGallery((prev) => ({ ...prev, [index]: true }))
+    const result = await uploadImageFile(file)
+    setUploadingGallery((prev) => ({ ...prev, [index]: false }))
+    if ('error' in result) {
+      setUploadError(result.error)
+    } else {
+      updateImage(index, 'src', result.url)
+    }
+  }
 
   function addImage() {
     setImages([...images, { src: '', caption: '' }])
@@ -74,7 +128,7 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
     <form action={formAction} style={{ maxWidth: '700px' }}>
       {project?.id && <input type="hidden" name="id" value={project.id} />}
 
-      {state?.error && (
+      {(state?.error || uploadError) && (
         <div
           style={{
             backgroundColor: '#fef2f2',
@@ -85,7 +139,7 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
             color: '#b91c1c',
           }}
         >
-          {state.error}
+          {state?.error || uploadError}
         </div>
       )}
 
@@ -108,17 +162,53 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
       </div>
 
       <div style={fieldStyle}>
-        <label style={labelStyle}>FORSIDEBILDE URL *</label>
-        <input
-          name="coverImage"
-          required
-          defaultValue={project?.coverImage || ''}
-          style={inputStyle}
-          placeholder="/img/prosjekt/bilde.jpg"
-        />
-        <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: '#999' }}>
-          Sti til bilde i /public/img/ eller ekstern URL.
-        </p>
+        <label style={labelStyle}>FORSIDEBILDE *</label>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <input
+            name="coverImage"
+            required
+            value={coverImageUrl}
+            onChange={(e) => setCoverImageUrl(e.target.value)}
+            style={{ ...inputStyle, flex: 1 }}
+            placeholder="/img/prosjekt/bilde.jpg eller last opp"
+          />
+          <label
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '8px 14px',
+              border: '1px solid #ccc',
+              fontSize: '0.7rem',
+              letterSpacing: '0.1em',
+              backgroundColor: uploadingCover ? '#f5f5f5' : '#fff',
+              cursor: uploadingCover ? 'not-allowed' : 'pointer',
+              whiteSpace: 'nowrap',
+              opacity: uploadingCover ? 0.6 : 1,
+            }}
+          >
+            {uploadingCover ? 'LASTER…' : '↑ LAST OPP'}
+            <input
+              type="file"
+              accept="image/*"
+              disabled={uploadingCover}
+              style={{ display: 'none' }}
+              onChange={(e) => handleCoverUpload(e.target.files?.[0])}
+            />
+          </label>
+        </div>
+        {isSafeImageUrl(coverImageUrl) && (
+          <img
+            src={coverImageUrl}
+            alt="Forsidebildeforhåndsvisning"
+            style={{
+              marginTop: '8px',
+              maxHeight: '120px',
+              maxWidth: '100%',
+              objectFit: 'contain',
+              border: '1px solid #eee',
+            }}
+          />
+        )}
       </div>
 
       <div style={fieldStyle}>
@@ -199,45 +289,78 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
           <div
             key={i}
             style={{
-              display: 'grid',
-              gridTemplateColumns: '2fr 1fr auto',
-              gap: '8px',
-              marginBottom: '8px',
-              alignItems: 'start',
+              marginBottom: '12px',
+              padding: '12px',
+              border: '1px solid #eee',
             }}
           >
-            <div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
               <input
                 name={`images[${i}][src]`}
                 value={img.src}
                 onChange={(e) => updateImage(i, 'src', e.target.value)}
-                style={inputStyle}
-                placeholder="/img/prosjekt/bilde.jpg"
+                style={{ ...inputStyle, flex: 1 }}
+                placeholder="/img/prosjekt/bilde.jpg eller last opp"
               />
+              <label
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '8px 14px',
+                  border: '1px solid #ccc',
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.1em',
+                  backgroundColor: uploadingGallery[i] ? '#f5f5f5' : '#fff',
+                  cursor: uploadingGallery[i] ? 'not-allowed' : 'pointer',
+                  whiteSpace: 'nowrap',
+                  opacity: uploadingGallery[i] ? 0.6 : 1,
+                }}
+              >
+                {uploadingGallery[i] ? 'LASTER…' : '↑ LAST OPP'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  disabled={!!uploadingGallery[i]}
+                  style={{ display: 'none' }}
+                  onChange={(e) => handleGalleryUpload(i, e.target.files?.[0])}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => removeImage(i)}
+                style={{
+                  padding: '8px 12px',
+                  background: 'none',
+                  border: '1px solid #e5e5e5',
+                  color: '#c0392b',
+                  cursor: 'pointer',
+                  fontSize: '0.8rem',
+                  flexShrink: 0,
+                }}
+              >
+                ×
+              </button>
             </div>
-            <div>
-              <input
-                name={`images[${i}][caption]`}
-                value={img.caption}
-                onChange={(e) => updateImage(i, 'caption', e.target.value)}
-                style={inputStyle}
-                placeholder="Bildetekst"
+            <input
+              name={`images[${i}][caption]`}
+              value={img.caption}
+              onChange={(e) => updateImage(i, 'caption', e.target.value)}
+              style={inputStyle}
+              placeholder="Bildetekst"
+            />
+            {isSafeImageUrl(img.src) && (
+              <img
+                src={img.src}
+                alt=""
+                style={{
+                  marginTop: '8px',
+                  maxHeight: '80px',
+                  maxWidth: '100%',
+                  objectFit: 'contain',
+                  border: '1px solid #eee',
+                }}
               />
-            </div>
-            <button
-              type="button"
-              onClick={() => removeImage(i)}
-              style={{
-                padding: '8px 12px',
-                background: 'none',
-                border: '1px solid #e5e5e5',
-                color: '#c0392b',
-                cursor: 'pointer',
-                fontSize: '0.8rem',
-              }}
-            >
-              ×
-            </button>
+            )}
           </div>
         ))}
       </div>
