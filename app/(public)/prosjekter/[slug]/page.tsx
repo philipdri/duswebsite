@@ -88,47 +88,44 @@ export default async function ProjectPage({ params }: Props) {
         paddingBottom: '80px',
       }}
     >
-      <div className="max-w-5xl mx-auto px-8">
+      <div style={{ maxWidth: '64rem', margin: '0 auto', paddingLeft: '2rem', paddingRight: '2rem' }}>
         <Link
           href="/#prosjekter"
-          className="font-classico text-xs tracking-widest hover:opacity-50 transition-opacity mb-12 inline-block"
-          style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 300 }}
+          style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 300, fontSize: '0.75rem', fontFamily: '"classico-urw", sans-serif', display: 'inline-block', marginBottom: '3rem', textDecoration: 'none' }}
         >
           ← TILBAKE
         </Link>
 
         <h1
-          className="font-classico tracking-widest mt-6 mb-4"
-          style={{ color: '#000', letterSpacing: '0.15em', fontWeight: 300, fontSize: '1.5rem' }}
+          style={{ color: '#000', letterSpacing: '0.15em', fontWeight: 300, fontSize: '1.5rem', marginTop: '1.5rem', marginBottom: '1rem', fontFamily: '"classico-urw", sans-serif' }}
         >
           {project.title}
         </h1>
 
-        <div className="my-12">
+        <div style={{ marginTop: '3rem', marginBottom: '3rem' }}>
           <ProjectSlideshow images={project.images.map((img) => ({ src: img.src, caption: img.caption ?? '' }))} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 my-12 py-8" style={{ borderTop: '1px solid #666669', borderBottom: '1px solid #666669' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', marginTop: '3rem', marginBottom: '3rem', paddingTop: '2rem', paddingBottom: '2rem', borderTop: '1px solid #666669', borderBottom: '1px solid #666669' }}>
           <div>
-            <p className="font-classico text-xs tracking-widest mb-2" style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400 }}>PROSJEKT</p>
-            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.title}</p>
+            <p style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400, fontSize: '0.75rem', marginBottom: '0.5rem', fontFamily: '"classico-urw", sans-serif' }}>PROSJEKT</p>
+            <p style={{ color: '#000', fontWeight: 300, fontSize: '0.875rem', fontFamily: '"classico-urw", sans-serif' }}>{project.title}</p>
           </div>
           <div>
-            <p className="font-classico text-xs tracking-widest mb-2" style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400 }}>STED</p>
-            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.location || '—'}</p>
+            <p style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400, fontSize: '0.75rem', marginBottom: '0.5rem', fontFamily: '"classico-urw", sans-serif' }}>STED</p>
+            <p style={{ color: '#000', fontWeight: 300, fontSize: '0.875rem', fontFamily: '"classico-urw", sans-serif' }}>{project.location || '—'}</p>
           </div>
           <div>
-            <p className="font-classico text-xs tracking-widest mb-2" style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400 }}>ÅRSTALL</p>
-            <p className="font-classico text-sm" style={{ color: '#000', fontWeight: 300 }}>{project.year || '—'}</p>
+            <p style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400, fontSize: '0.75rem', marginBottom: '0.5rem', fontFamily: '"classico-urw", sans-serif' }}>ÅRSTALL</p>
+            <p style={{ color: '#000', fontWeight: 300, fontSize: '0.875rem', fontFamily: '"classico-urw", sans-serif' }}>{project.year || '—'}</p>
           </div>
         </div>
 
-        <div className="max-w-2xl">
+        <div style={{ maxWidth: '42rem' }}>
           {(project.description || '').split('\n\n').map((paragraph, i) => (
             <p
               key={i}
-              className="font-classico leading-relaxed mb-4"
-              style={{ color: '#434343', fontWeight: 300, fontSize: '1rem', lineHeight: '1.9' }}
+              style={{ color: '#434343', fontWeight: 300, fontSize: '1rem', lineHeight: '1.9', marginBottom: '1rem', fontFamily: '"classico-urw", sans-serif' }}
             >
               {paragraph}
             </p>
