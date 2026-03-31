@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 const FADE_SPEED = 1.6;
 const MIN_LOGO_SCALE = 0.25;
@@ -17,8 +17,10 @@ export default function HeroSection() {
       const progress = Math.min(1, window.scrollY / (heroHeight * 0.55));
       setScrollProgress(progress);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const logoOpacity = Math.max(0, 1 - scrollProgress * FADE_SPEED);
@@ -30,20 +32,19 @@ export default function HeroSection() {
       ref={heroRef}
       className="relative flex items-center justify-center"
       style={{
-        height: 'calc(100vh - 60px)',
-        width: '100%',
-        marginTop: '60px',
-        overflow: 'hidden',
+        minHeight: "100svh",
+        width: "100%",
+        overflow: "hidden",
       }}
     >
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           inset: 0,
-          backgroundImage: 'url(/img/skygge_glød.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
+          backgroundImage: "url(/img/skygge_glød.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+          backgroundAttachment: "fixed",
         }}
       />
       <div
@@ -51,7 +52,7 @@ export default function HeroSection() {
         style={{
           opacity: logoOpacity,
           transform: `scale(${logoScale}) translateY(${logoTranslateY}px)`,
-          willChange: 'opacity, transform',
+          willChange: "opacity, transform",
         }}
       >
         <Image
@@ -60,7 +61,7 @@ export default function HeroSection() {
           width={120}
           height={120}
           unoptimized
-          style={{ width: '120px', height: 'auto' }}
+          style={{ width: "120px", height: "auto" }}
         />
       </div>
     </div>

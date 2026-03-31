@@ -3,28 +3,47 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+
+const HOME_LOGO_REVEAL_THRESHOLD = 24;
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const menuPanelRef = useRef<HTMLElement | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
   const isHome = pathname === "/";
   const links = [
     { href: "/", label: "HJEM" },
-    { href: "/tjenester", label: "TJENESTER" },
     { href: "/#prosjekter", label: "PROSJEKTER" },
+    { href: "/tjenester", label: "TJENESTER" },
     { href: "/#omoss", label: "OM OSS" },
+    { href: "/#kontakt", label: "KONTAKT" },
   ];
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 80);
+      setScrolled(window.scrollY > HOME_LOGO_REVEAL_THRESHOLD);
     };
+
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -39,12 +58,15 @@ export default function Header() {
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
-      if (!menuRef.current) {
+      if (!menuRef.current && !menuPanelRef.current) {
         return;
       }
 
       const target = event.target as Node;
-      if (!menuRef.current.contains(target)) {
+      const clickedToggle = menuRef.current?.contains(target);
+      const clickedPanel = menuPanelRef.current?.contains(target);
+
+      if (!clickedToggle && !clickedPanel) {
         setMenuOpen(false);
       }
     };
@@ -57,143 +79,258 @@ export default function Header() {
     };
   }, []);
 
-  const isLinkActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/";
-    }
-    if (href.startsWith("/#")) {
-      return pathname === "/";
-    }
-    return pathname === href;
-  };
-
   const showLogo = !isHome || scrolled;
 
+  const handleMenuNavigation = (href: string) => {
+    setMenuOpen(false);
+
+    if (!href.startsWith("/#")) {
+      return;
+    }
+
+    if (pathname !== "/") {
+      router.push(href);
+      return;
+    }
+
+    const sectionId = href.slice(2);
+    requestAnimationFrame(() => {
+      document.getElementById(sectionId)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      window.history.replaceState(null, "", href);
+    });
+  };
+
   return (
-    <>
-      <header
-        className=" w-full top-0 left-0 right-0 z-50 flex items-center justify-between px-8"
+    <header
+      className="fixed left-0 top-0 z-[200] flex w-full items-center justify-between"
+      style={{
+        backgroundColor: "#f7f4f0",
+        height: "var(--header-height)",
+        paddingInline: "clamp(1rem, 3vw, 2.25rem)",
+        boxShadow:
+          scrolled || menuOpen ? "0 2px 10px rgba(0,0,0,0.1)" : "none",
+        transition: "box-shadow 0.3s ease",
+      }}
+    >
+      <Link
+        href="/"
+        className="transition-all duration-500"
         style={{
-          backgroundColor: "#f7f4f0",
-          height: "60px",
+          opacity: showLogo ? 1 : 0,
+          pointerEvents: showLogo ? "auto" : "none",
         }}
       >
-        <Link
-          href="/"
-          className="transition-all duration-500"
+        <Image
+          src="/img/logo_lys.png"
+          alt="DUS Arkitekter Logo"
+          width={36}
+          height={36}
+          unoptimized
+          style={{ width: "36px", height: "auto" }}
+        />
+      </Link>
+
+      <Link
+        href="/"
+        className="absolute left-1/2 -translate-x-1/2 font-classico tracking-widest"
+        style={{
+          color: "#000",
+          letterSpacing: "0.2em",
+          fontWeight: 300,
+          fontSize: "clamp(10px, 2.4vw, 14px)",
+          whiteSpace: "nowrap",
+          maxWidth: "70vw",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        DUS ARKITEKTER
+      </Link>
+
+      <div
+        key={pathname ?? "mobile-nav"}
+        className="relative z-[230] flex items-center"
+        ref={menuRef}
+      >
+        <button
+          type="button"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          className="inline-flex items-center justify-center"
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav-panel"
+          aria-label={menuOpen ? "Lukk meny" : "Apne meny"}
           style={{
-            opacity: showLogo ? 1 : 0,
-            pointerEvents: showLogo ? "auto" : "none",
+            color: "#000",
+            backgroundColor: "transparent",
+            border: "none",
+            padding: "0.5rem 0",
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minWidth: "56px",
+            minHeight: "56px",
+            position: "relative",
+            zIndex: 230,
           }}
         >
-          <Image
-            src="/img/logo_lys.png"
-            alt="DUS Arkitekter Logo"
-            width={36}
-            height={36}
-            unoptimized
-            style={{ width: "36px", height: "auto" }}
-          />
-        </Link>
-
-        <Link
-          href="/"
-          className="absolute left-1/2 -translate-x-1/2 font-classico tracking-widest text-sm"
-          style={{ color: "#000", letterSpacing: "0.25em", fontWeight: 300 }}
-        >
-          DUS ARKITEKTER
-        </Link>
-
-        <div
-          key={pathname ?? "mobile-nav"}
-          className="relative z-[60] shrink-0"
-          ref={menuRef}
-        >
-          <button
-            type="button"
-            onClick={() => setMenuOpen((prev) => !prev)}
-            className="inline-flex h-16 w-16 items-center justify-center transition-opacity hover:opacity-70"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-nav-panel"
-            aria-label={menuOpen ? "Lukk meny" : "Apne meny"}
-            style={{
-              color: "#000",
-              backgroundColor: "transparent",
-              border: "none",
-              padding: 0,
-            }}
+          <span
+            className="flex flex-col items-center justify-center gap-[5px]"
+            aria-hidden
+            style={{ display: "flex", flexDirection: "column", gap: "5px" }}
           >
             <span
-              className="flex flex-col items-center justify-center gap-1.5"
-              aria-hidden
-            >
-              <span
-                className="block w-10 transition-all duration-300"
-                style={{
-                  backgroundColor: "#111",
-                  height: "2px",
-                  transform: menuOpen
-                    ? "translateY(6px) rotate(45deg)"
-                    : "none",
-                }}
-              />
-              <span
-                className="block w-10 transition-all duration-300"
-                style={{
-                  backgroundColor: "#111",
-                  height: "2px",
-                  opacity: menuOpen ? 0 : 1,
-                }}
-              />
-              <span
-                className="block w-10 transition-all duration-300"
-                style={{
-                  backgroundColor: "#111",
-                  height: "2px",
-                  transform: menuOpen
-                    ? "translateY(-6px) rotate(-45deg)"
-                    : "none",
-                }}
-              />
-            </span>
-            <span className="sr-only font-classico" style={{ fontWeight: 300 }}>
-              {menuOpen ? "Lukk meny" : "Apne meny"}
-            </span>
-          </button>
-
-          {menuOpen ? (
-            <div
-              id="mobile-nav-panel"
-              className="fixed right-4 top-[68px] z-50 rounded-xl border p-2 shadow-lg"
+              className="transition-all duration-300"
               style={{
-                borderColor: "#d4cfc8",
-                backgroundColor: "#f7f4f0",
-                width: "min(18rem, calc(100vw - 2rem))",
-                maxWidth: "calc(100vw - 2rem)",
+                display: "block",
+                backgroundColor: "#000",
+                height: "2.5px",
+                width: "32px",
+                transform: menuOpen
+                  ? "translateY(6px) rotate(45deg)"
+                  : "none",
               }}
-            >
-              <nav className="flex flex-col gap-1">
-                {links.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-lg px-3 py-2 text-sm font-classico tracking-widest transition-opacity hover:opacity-60"
-                    style={{
-                      color: isLinkActive(item.href) ? "#6f6e68" : "#000",
-                      letterSpacing: "0.16em",
-                      fontWeight: isLinkActive(item.href) ? 400 : 300,
-                    }}
-                    onClick={() => setMenuOpen(false)}
-                    aria-current={isLinkActive(item.href) ? "page" : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-          ) : null}
-        </div>
-      </header>
-    </>
+            />
+            <span
+              className="transition-all duration-300"
+              style={{
+                display: "block",
+                backgroundColor: "#000",
+                height: "2.5px",
+                width: "32px",
+                opacity: menuOpen ? 0 : 1,
+              }}
+            />
+            <span
+              className="transition-all duration-300"
+              style={{
+                display: "block",
+                backgroundColor: "#000",
+                height: "2.5px",
+                width: "32px",
+                transform: menuOpen
+                  ? "translateY(-6px) rotate(-45deg)"
+                  : "none",
+              }}
+            />
+          </span>
+          <span className="sr-only font-classico" style={{ fontWeight: 300 }}>
+            {menuOpen ? "Lukk meny" : "Apne meny"}
+          </span>
+        </button>
+      </div>
+
+      <div
+        id="mobile-nav-panel"
+        className="fixed inset-0 z-[220]"
+        aria-hidden={!menuOpen}
+        style={{
+          backgroundColor: "#f7f4f0",
+          opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? "auto" : "none",
+          transform: menuOpen ? "translate3d(0, 0, 0)" : "translate3d(0, -100%, 0)",
+          transition: "transform 0.45s ease, opacity 0.3s ease",
+          overflow: "hidden",
+          inset: 0,
+        }}
+      >
+        <nav
+          ref={menuPanelRef}
+          className="flex h-full w-full flex-col items-center justify-center"
+          style={{
+            padding: "calc(var(--header-height) + 2rem) 2rem 3rem",
+            gap: "3.25rem",
+            boxSizing: "border-box",
+            overflowX: "hidden",
+          }}
+        >
+          {links.map((item) => (
+            item.href.startsWith("/#") ? (
+              <button
+                key={item.href}
+                type="button"
+                className="font-classico"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "0.9rem",
+                  color: "#000",
+                  fontFamily: '"classico-urw", sans-serif',
+                  letterSpacing: "0.12em",
+                  fontWeight: 300,
+                  fontSize: "clamp(1.2rem, 4.2vw, 2.45rem)",
+                  lineHeight: 1,
+                  textAlign: "center",
+                  maxWidth: "100%",
+                  overflowWrap: "anywhere",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  padding: "0.2rem 0",
+                  cursor: "pointer",
+                  opacity: hoveredItem === item.href ? 0.65 : 1,
+                  transition: "opacity 0.25s ease",
+                }}
+                onMouseEnter={() => setHoveredItem(item.href)}
+                onMouseLeave={() => setHoveredItem(null)}
+                onClick={() => handleMenuNavigation(item.href)}
+              >
+                <span>{item.label}</span>
+                <span
+                  aria-hidden
+                  className="block h-px origin-center bg-current transition-transform duration-300"
+                  style={{
+                    width: "min(8rem, 100%)",
+                    transform: hoveredItem === item.href ? "scaleX(1)" : "scaleX(0)",
+                  }}
+                />
+              </button>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="font-classico"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "0.9rem",
+                  color: "#000",
+                  fontFamily: '"classico-urw", sans-serif',
+                  letterSpacing: "0.12em",
+                  fontWeight: 300,
+                  fontSize: "clamp(1.2rem, 4.2vw, 2.45rem)",
+                  lineHeight: 1,
+                  textAlign: "center",
+                  maxWidth: "100%",
+                  overflowWrap: "anywhere",
+                  cursor: "pointer",
+                  opacity: hoveredItem === item.href ? 0.65 : 1,
+                  transition: "opacity 0.25s ease",
+                  textDecoration: "none",
+                  padding: "0.2rem 0",
+                }}
+                onMouseEnter={() => setHoveredItem(item.href)}
+                onMouseLeave={() => setHoveredItem(null)}
+                onClick={() => setMenuOpen(false)}
+              >
+                <span>{item.label}</span>
+                <span
+                  aria-hidden
+                  className="block h-px origin-center bg-current transition-transform duration-300"
+                  style={{
+                    width: "min(8rem, 100%)",
+                    transform: hoveredItem === item.href ? "scaleX(1)" : "scaleX(0)",
+                  }}
+                />
+              </Link>
+            )
+          ))}
+        </nav>
+      </div>
+    </header>
   );
 }

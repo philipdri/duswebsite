@@ -68,8 +68,12 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
         </div>
       </Link>
       <div
-        className="flex flex-col justify-center px-50 py-8 "
-        style={{ width: "40%" }}
+        className="flex flex-col justify-center py-8"
+        style={{
+          width: "40%",
+          paddingInlineStart: isReversed ? "0" : "clamp(1.5rem, 4vw, 4rem)",
+          paddingInlineEnd: isReversed ? "clamp(1.5rem, 4vw, 4rem)" : "0",
+        }}
       >
         <p
           className="font-classico text-xs tracking-widest mb-4"

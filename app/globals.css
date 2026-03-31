@@ -2,7 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --header-height: 100px;
+  --header-content-gap: 16px;
+  --header-offset: calc(var(--header-height) + var(--header-content-gap));
+}
+
+html {
+  scroll-padding-top: var(--header-offset);
+  overflow-x: hidden;
+}
+
 body {
+  margin: 0;
   background-color: #f7f4f0;
   overflow-x: hidden;
   font-family: "classico-urw", sans-serif;

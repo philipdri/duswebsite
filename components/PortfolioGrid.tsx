@@ -41,7 +41,11 @@ export default async function PortfolioGrid() {
     <section
       id="prosjekter"
       className="w-auto "
-      style={{ backgroundColor: "#f7f4f0" }}
+      style={{
+        backgroundColor: "#f7f4f0",
+
+        padding: "3rem 7% 0",
+      }}
     >
       {portfolioProjects.map((project, index) => (
         <PortfolioItem key={project.slug} project={project} index={index} />

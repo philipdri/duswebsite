@@ -1,29 +1,52 @@
 export default function Footer() {
   return (
     <footer
-      style={{ backgroundColor: "#ede9e3", borderTop: "1px solid #d4cfc8" }}
-      className="py-16 px-8 mt-0"
+      id="kontakt"
+      style={{
+        backgroundColor: "#ede9e3",
+        borderTop: "1px solid #d4cfc8",
+        paddingTop: "2rem",
+        paddingBottom: "3rem",
+      }}
+      className="mt-0 px-6 sm:px-10 md:px-14"
     >
-      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-        <h2
-          className="font-classico tracking-widest text-xs mb-8"
-          style={{ color: "#858589", letterSpacing: "0.25em", fontWeight: 400 }}
-        >
-          KONTAKT OSS
-        </h2>
-        <a
-          href="mailto:post@dusarkitekter.no"
-          className="font-classico text-lg hover:opacity-60 transition-opacity block mb-8"
-          style={{ fontWeight: 300, color: "#1a1a1a" }}
-        >
-          post@dusarkitekter.no
-        </a>
-        <div className="flex gap-6 mt-4">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-3 items-end justify-items-center gap-8">
+        <div className="flex w-full items-end justify-center">
+          <p
+            className="font-classico text-xs tracking-widest"
+            style={{ color: "#aaa9a3", letterSpacing: "0.15em", fontWeight: 300 }}
+          >
+            {"\u00A9"} {new Date().getFullYear()} DUS ARKITEKTER AS
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center gap-4 text-center">
+          <h2
+            className="font-classico tracking-widest"
+            style={{
+              color: "#858589",
+              letterSpacing: "0.25em",
+              fontWeight: 400,
+              fontSize: "0.65rem",
+            }}
+          >
+            KONTAKT OSS
+          </h2>
+          <a
+            href="mailto:post@dusarkitekter.no"
+            className="block font-classico text-lg transition-opacity hover:opacity-60"
+            style={{ fontWeight: 300, color: "#1a1a1a", textDecoration: "none" }}
+          >
+            post@dusarkitekter.no
+          </a>
+        </div>
+
+        <div className="flex w-full items-center justify-center gap-6">
           <a
             href="https://www.instagram.com/dusarkitekter"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:opacity-60 transition-opacity"
+            className="transition-opacity hover:opacity-60"
             style={{ color: "#1a1a1a" }}
             aria-label="Instagram"
           >
@@ -36,7 +59,7 @@ export default function Footer() {
             href="https://www.linkedin.com/company/dusarkitekter"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:opacity-60 transition-opacity"
+            className="transition-opacity hover:opacity-60"
             style={{ color: "#1a1a1a" }}
             aria-label="LinkedIn"
           >
@@ -46,12 +69,6 @@ export default function Footer() {
             ></ion-icon>
           </a>
         </div>
-        <p
-          className="font-classico text-xs tracking-widest mt-12"
-          style={{ color: "#aaa9a3", letterSpacing: "0.15em", fontWeight: 300 }}
-        >
-          © {new Date().getFullYear()} DUS ARKITEKTER
-        </p>
       </div>
     </footer>
   );
