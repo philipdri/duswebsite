@@ -54,7 +54,7 @@ export default async function EditProjectPage({ params }: Props) {
             year: project.year,
             coverImage: project.coverImage,
             published: project.published,
-            images: project.images.map((img) => ({ src: img.src, caption: img.caption || '' })),
+            images: project.images.map((img: { src: string; caption: string | null }) => ({ src: img.src, caption: img.caption || '' })),
           }}
           action={updateProject}
           submitLabel="LAGRE ENDRINGER"
