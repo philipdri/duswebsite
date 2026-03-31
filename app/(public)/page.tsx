@@ -18,7 +18,7 @@ export default function Home() {
           className="mb-8 font-classico leading-relaxed"
           style={{
             color: "#000000",
-            fontWeight: 150,
+            fontWeight: 200,
             fontSize: "clamp(10px, 2.5vw, 30px)",
             lineHeight: "1.6",
             textAlign: "center",

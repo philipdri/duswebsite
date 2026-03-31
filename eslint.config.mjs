@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Legacy static-site files are not part of the Next.js app
+    "legacy/**",
   ]),
 ]);
 
