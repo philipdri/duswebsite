@@ -2,8 +2,11 @@ import PortfolioGrid from "@/components/PortfolioGrid";
 import AboutSection from "@/components/AboutSection";
 import ScrollToTop from "@/components/ScrollToTop";
 import HeroSection from "@/components/HeroSection";
+import { getSiteContent } from "@/lib/content-db";
 
-export default function Home() {
+export default async function Home() {
+  const introText = await getSiteContent("intro_text");
+
   return (
     <>
       <HeroSection />
@@ -26,9 +29,7 @@ export default function Home() {
             maxWidth: "28ch",
           }}
         >
-          Dus handler om å være i harmoni med noe eller noen, og det har blitt
-          grunnleggende for vår estetikk som ellers er preget av renhet,
-          funksjonalitet og tidløs eleganse.
+          {introText}
         </p>
         <a
           href="/tjenester"

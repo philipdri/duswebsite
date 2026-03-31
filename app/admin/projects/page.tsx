@@ -20,8 +20,9 @@ async function getProjects() {
 export default async function AdminProjectsPage() {
   const projects = await getProjects()
 
-  const published = projects?.filter((p) => p.published) ?? []
-  const drafts = projects?.filter((p) => !p.published) ?? []
+  type ProjectRow = NonNullable<typeof projects>[number]
+  const published = projects?.filter((p: ProjectRow) => p.published) ?? []
+  const drafts = projects?.filter((p: ProjectRow) => !p.published) ?? []
 
   const toRow = (p: NonNullable<typeof projects>[number]) => ({
     id: p.id,

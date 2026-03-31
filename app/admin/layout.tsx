@@ -38,6 +38,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             + NYTT PROSJEKT
           </Link>
+          <Link
+            href="/admin/tjenester"
+            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.1em' }}
+          >
+            TJENESTER
+          </Link>
+          <Link
+            href="/admin/content"
+            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.1em' }}
+          >
+            INNHOLD
+          </Link>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <Link

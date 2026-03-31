@@ -1,6 +1,11 @@
-import { services } from "@/lib/services";
+import { getServices, getSiteContent } from "@/lib/content-db";
 
-export default function TjenesterPage() {
+export default async function TjenesterPage() {
+  const [services, introText] = await Promise.all([
+    getServices(),
+    getSiteContent("tjenester_intro"),
+  ]);
+
   return (
     <div style={{ paddingTop: '60px', backgroundColor: '#f7f4f0', minHeight: '100vh' }}>
       <div
@@ -27,7 +32,7 @@ export default function TjenesterPage() {
             width: '55%',
           }}
         >
-          Vi har erfaring innenfor tilbygg og transformasjon av hytter og eneboliger, men vårt interessefelt er bredt og vi tar gjerne både større og mindre prosjekter. Så hvis vi skulle være av interesse, ikke nøl med å ta kontakt for en hyggelig, uforpliktende prat.
+          {introText}
         </p>
       </div>
       <div

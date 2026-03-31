@@ -1,4 +1,10 @@
-export default function AboutSection() {
+import { getSiteContent } from "@/lib/content-db";
+
+export default async function AboutSection() {
+  const heading = await getSiteContent("about_heading");
+  const rawText = await getSiteContent("about_text");
+  const paragraphs = rawText.split(/\n{2,}/).filter(Boolean);
+
   return (
     <section
       id="omoss"
@@ -25,36 +31,27 @@ export default function AboutSection() {
             paddingLeft: "10%",
           }}
         >
-          Om Dus Arkitekter
+          {heading}
         </h2>
         <div className="flex flex-col gap-12">
           <div>
-            <p
-              className="font-classico leading-relaxed"
-              style={{
-                color: "#434343",
-                fontWeight: 300,
-                fontSize: "clamp(10px, 2vw, 15px)",
-                lineHeight: "1.8",
-                paddingRight: "10%",
-                paddingLeft: "10%",
-              }}
-            >
-              Vi er et lite og nyoppstartet, men ambisiøst arkitektkontor som er
-              drevet av to engasjerte arkitekter - Synne Spjeld Høyvik og
-              Anniken Marie Haugan.
-              <br />
-              Navnet Dus Arkitekter kommer fra vår visjon om å være
-              &quot;dus&quot; med våre klienter, prosjekter og omgivelsene selv.
-              For oss handler Dus om å være i harmoni med noe eller noen, og det
-              har blitt grunnleggende for vår estetikk som ellers er preget av
-              renhet, funksjonalitet og tidløs eleganse.
-              <br />
-              Vi har erfaring innenfor tilbygg og transformasjon av hytter og
-              eneboliger, men vårt interessefelt er bredt og vi tar gjerne både
-              større og mindre prosjekter. Så hvis vi skulle være av interesse,
-              ikke nøl med å ta kontakt for en hyggelig, uforpliktende prat.
-            </p>
+            {paragraphs.map((para, i) => (
+              <p
+                key={i}
+                className="font-classico leading-relaxed"
+                style={{
+                  color: "#434343",
+                  fontWeight: 300,
+                  fontSize: "clamp(10px, 2vw, 15px)",
+                  lineHeight: "1.8",
+                  paddingRight: "10%",
+                  paddingLeft: "10%",
+                  marginBottom: i < paragraphs.length - 1 ? "1em" : 0,
+                }}
+              >
+                {para}
+              </p>
+            ))}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
