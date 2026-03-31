@@ -15,51 +15,62 @@ export default function ProjectSlideshow({ images }: ProjectSlideshowProps) {
   const prev = () => setCurrent((c) => (c - 1 + images.length) % images.length);
   const next = () => setCurrent((c) => (c + 1) % images.length);
 
+  const buttonStyle: React.CSSProperties = {
+    background: 'none',
+    border: 'none',
+    padding: '0 12px',
+    cursor: 'pointer',
+    color: '#171717',
+    fontSize: '1.25rem',
+    lineHeight: 1,
+    fontFamily: '"classico-urw", sans-serif',
+    letterSpacing: '0.05em',
+    opacity: 0.6,
+    transition: 'opacity 0.2s',
+  };
+
   return (
-    <div className="w-full">
-      <div className="relative w-full" style={{ maxHeight: '70vh', overflow: 'hidden' }}>
+    <div style={{ width: '100%' }}>
+      {/* Image */}
+      <div style={{ width: '100%', overflow: 'hidden' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={images[current].src}
           alt={images[current].caption}
-          className="w-full object-contain"
-          style={{ maxHeight: '70vh', backgroundColor: '#f7f4f0' }}
+          style={{ width: '100%', objectFit: 'contain', maxHeight: '70vh', backgroundColor: '#f7f4f0', display: 'block' }}
         />
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={prev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 font-classico text-2xl hover:opacity-50 transition-opacity"
-              style={{ color: '#000', background: 'rgba(247,244,240,0.7)', border: 'none', padding: '8px 16px' }}
-              aria-label="Previous image"
-            >
-              ‹
-            </button>
-            <button
-              onClick={next}
-              className="absolute right-4 top-1/2 -translate-y-1/2 font-classico text-2xl hover:opacity-50 transition-opacity"
-              style={{ color: '#000', background: 'rgba(247,244,240,0.7)', border: 'none', padding: '8px 16px' }}
-              aria-label="Next image"
-            >
-              ›
-            </button>
-          </>
-        )}
       </div>
-      <div className="text-center mt-4">
-        <p
-          className="font-classico text-xs tracking-widest"
-          style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 300 }}
-        >
+
+      {/* Caption + navigation */}
+      <div style={{ marginTop: '16px', textAlign: 'center' }}>
+        <p style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 300, fontSize: '0.75rem', fontFamily: '"classico-urw", sans-serif', marginBottom: '10px' }}>
           {images[current].caption}
         </p>
+
         {images.length > 1 && (
-          <p
-            className="font-classico text-xs mt-2"
-            style={{ color: '#737373', fontWeight: 300 }}
-          >
-            {current + 1} / {images.length}
-          </p>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            <button
+              onClick={prev}
+              style={buttonStyle}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '0.6')}
+              aria-label="Previous image"
+            >
+              ←
+            </button>
+            <span style={{ color: '#737373', fontWeight: 300, fontSize: '0.75rem', letterSpacing: '0.15em', fontFamily: '"classico-urw", sans-serif', minWidth: '48px', textAlign: 'center' }}>
+              {current + 1} / {images.length}
+            </span>
+            <button
+              onClick={next}
+              style={buttonStyle}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '0.6')}
+              aria-label="Next image"
+            >
+              →
+            </button>
+          </div>
         )}
       </div>
     </div>
