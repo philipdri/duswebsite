@@ -152,7 +152,7 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
           <input
             name="slug"
             required
-            pattern="[a-z0-9-]+"
+            pattern="[-a-z0-9]+"
             defaultValue={project?.slug || ''}
             style={inputStyle}
             placeholder="f.eks. enebolig-bergen"
@@ -199,6 +199,8 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
           <img
             src={coverImageUrl}
             alt="Forsidebildeforhåndsvisning"
+            width={200}
+            height={120}
             style={{
               marginTop: '8px',
               maxHeight: '120px',
@@ -341,6 +343,8 @@ export default function ProjectForm({ project, action, submitLabel }: ProjectFor
               <img
                 src={img.src}
                 alt=""
+                width={160}
+                height={80}
                 style={{
                   marginTop: '8px',
                   maxHeight: '80px',

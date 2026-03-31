@@ -11,6 +11,21 @@ const ALLOWED_TYPES: Record<string, string> = {
 }
 const MAX_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
 
+async function saveToBlob(filename: string, file: File): Promise<string> {
+  const { put } = await import('@vercel/blob')
+  const blob = await put(`uploads/${filename}`, file, { access: 'public' })
+  return blob.url
+}
+
+async function saveToFilesystem(filename: string, file: File): Promise<string> {
+  const uploadsDir = join(process.cwd(), 'public', 'uploads')
+  await mkdir(uploadsDir, { recursive: true })
+  const bytes = await file.arrayBuffer()
+  const buffer = Buffer.from(bytes)
+  await writeFile(join(uploadsDir, filename), buffer)
+  return `/uploads/${filename}`
+}
+
 export async function POST(request: NextRequest) {
   const ok = await verifyAdminSession()
   if (!ok) {
@@ -40,12 +55,14 @@ export async function POST(request: NextRequest) {
   const randomPart = Math.random().toString(36).slice(2, 10)
   const filename = `${Date.now()}-${randomPart}${ext}`
 
-  const uploadsDir = join(process.cwd(), 'public', 'uploads')
-  await mkdir(uploadsDir, { recursive: true })
+  try {
+    // Use Vercel Blob when the token is available (production), otherwise fall back to local filesystem
+    const url = process.env.BLOB_READ_WRITE_TOKEN
+      ? await saveToBlob(filename, file)
+      : await saveToFilesystem(filename, file)
 
-  const bytes = await file.arrayBuffer()
-  const buffer = Buffer.from(bytes)
-  await writeFile(join(uploadsDir, filename), buffer)
-
-  return NextResponse.json({ url: `/uploads/${filename}` })
+    return NextResponse.json({ url })
+  } catch {
+    return NextResponse.json({ error: 'Filen kunne ikke lagres. Prøv igjen.' }, { status: 500 })
+  }
 }
