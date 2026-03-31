@@ -56,42 +56,32 @@ export default function AboutSection() {
               ikke nøl med å ta kontakt for en hyggelig, uforpliktende prat.
             </p>
           </div>
-          <div
-            className="flex flex-row gap-8 flex-wrap"
-            style={{
-              justifyContent: "center",
-              flexDirection: "row",
-              gap: "2rem",
-            }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/img/oss.jpg"
               alt="Oss bak Dus!"
+              className="h-48 w-full object-cover sm:h-60 sm:w-auto"
               style={{
                 boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                height: "15em",
-                width: "auto",
               }}
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/img/oppheng.jpg"
               alt="Oss bak Dus!"
+              className="h-48 w-full object-cover sm:h-60 sm:w-auto"
               style={{
                 boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                height: "15em",
-                width: "auto",
               }}
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/img/byplanlegging.jpg"
               alt="Oss bak Dus!"
+              className="h-48 w-full object-cover sm:h-60 sm:w-auto"
               style={{
                 boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                height: "15em",
-                width: "auto",
               }}
             />
           </div>
