@@ -117,9 +117,7 @@ export default function Header() {
       ? `calc((50vw - clamp(1rem, 3vw, 2.25rem) - ${SMALL_LOGO_SIZE / 2}px) * ${frac})`
       : "0px";
   const logoTy =
-    p < 1
-      ? `calc((50vh - ${HEADER_HEIGHT / 2}px) * ${frac})`
-      : "0px";
+    p < 1 ? `calc((50vh - ${HEADER_HEIGHT / 2}px) * ${frac})` : "0px";
   const logoScale = 1 + (LARGE_LOGO_SIZE / SMALL_LOGO_SIZE - 1) * (1 - p);
   const logoTransform =
     p >= 1 ? "none" : `translate(${logoTx}, ${logoTy}) scale(${logoScale})`;
@@ -156,8 +154,7 @@ export default function Header() {
         backgroundColor: "#f7f4f0",
         height: "var(--header-height)",
         paddingInline: "clamp(1rem, 3vw, 2.25rem)",
-        boxShadow:
-          scrolled || menuOpen ? "0 2px 10px rgba(0,0,0,0.1)" : "none",
+        boxShadow: scrolled || menuOpen ? "0 2px 10px rgba(0,0,0,0.1)" : "none",
         transition: "box-shadow 0.3s ease",
       }}
     >
@@ -201,7 +198,7 @@ export default function Header() {
 
       <div
         key={pathname ?? "mobile-nav"}
-        className="relative z-[230] flex items-center"
+        className="relative z-230 flex items-center"
         ref={menuRef}
       >
         <button
@@ -227,7 +224,7 @@ export default function Header() {
           }}
         >
           <span
-            className="flex flex-col items-center justify-center gap-[5px]"
+            className="flex flex-col items-center justify-center gap-1.25"
             aria-hidden
             style={{ display: "flex", flexDirection: "column", gap: "5px" }}
           >
@@ -238,9 +235,7 @@ export default function Header() {
                 backgroundColor: "#000",
                 height: "2.5px",
                 width: "32px",
-                transform: menuOpen
-                  ? "translateY(6px) rotate(45deg)"
-                  : "none",
+                transform: menuOpen ? "translateY(6px) rotate(45deg)" : "none",
               }}
             />
             <span
@@ -280,7 +275,9 @@ export default function Header() {
           backgroundColor: "#f7f4f0",
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? "auto" : "none",
-          transform: menuOpen ? "translate3d(0, 0, 0)" : "translate3d(0, -100%, 0)",
+          transform: menuOpen
+            ? "translate3d(0, 0, 0)"
+            : "translate3d(0, -100%, 0)",
           transition: "transform 0.45s ease, opacity 0.3s ease",
           overflow: "hidden",
           inset: 0,
@@ -288,15 +285,15 @@ export default function Header() {
       >
         <nav
           ref={menuPanelRef}
-          className="flex h-full w-full flex-col items-center justify-center"
+          className="flex h-min w-full flex-col items-center justify-center"
           style={{
-            padding: "calc(var(--header-height) + 2rem) 2rem 3rem",
-            gap: "3.25rem",
+            padding: "calc(var(--header-height)) 2rem 3rem",
+            gap: "3.0rem",
             boxSizing: "border-box",
             overflowX: "hidden",
           }}
         >
-          {links.map((item) => (
+          {links.map((item) =>
             item.href.startsWith("/#") ? (
               <button
                 key={item.href}
@@ -311,7 +308,7 @@ export default function Header() {
                   fontFamily: '"classico-urw", sans-serif',
                   letterSpacing: "0.12em",
                   fontWeight: 300,
-                  fontSize: "clamp(1.2rem, 4.2vw, 2.45rem)",
+                  fontSize: "clamp(1.2rem, 3.2vw, 1.45rem)",
                   lineHeight: 1,
                   textAlign: "center",
                   maxWidth: "100%",
@@ -333,7 +330,8 @@ export default function Header() {
                   className="block h-px origin-center bg-current transition-transform duration-300"
                   style={{
                     width: "min(8rem, 100%)",
-                    transform: hoveredItem === item.href ? "scaleX(1)" : "scaleX(0)",
+                    transform:
+                      hoveredItem === item.href ? "scaleX(1)" : "scaleX(0)",
                   }}
                 />
               </button>
@@ -351,7 +349,7 @@ export default function Header() {
                   fontFamily: '"classico-urw", sans-serif',
                   letterSpacing: "0.12em",
                   fontWeight: 300,
-                  fontSize: "clamp(1.2rem, 4.2vw, 2.45rem)",
+                  fontSize: "clamp(1.2rem, 3.2vw, 1.45rem)",
                   lineHeight: 1,
                   textAlign: "center",
                   maxWidth: "100%",
@@ -372,12 +370,13 @@ export default function Header() {
                   className="block h-px origin-center bg-current transition-transform duration-300"
                   style={{
                     width: "min(8rem, 100%)",
-                    transform: hoveredItem === item.href ? "scaleX(1)" : "scaleX(0)",
+                    transform:
+                      hoveredItem === item.href ? "scaleX(1)" : "scaleX(0)",
                   }}
                 />
               </Link>
-            )
-          ))}
+            ),
+          )}
         </nav>
       </div>
     </header>
