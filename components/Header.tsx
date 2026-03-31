@@ -6,10 +6,20 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
 const HOME_LOGO_REVEAL_THRESHOLD = 24;
+// Distance (px) over which the logo travels from the viewport centre to the header corner.
+const LOGO_TRANSITION_PX = 320;
+// Natural size of the small header logo (px)
+const SMALL_LOGO_SIZE = 36;
+// Enlarged size of the logo in the hero (px)
+const LARGE_LOGO_SIZE = 120;
+// Header height from CSS variable --header-height (px)
+const HEADER_HEIGHT = 100;
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // 0 = logo at viewport centre (hero), 1 = logo in header corner
+  const [logoProgress, setLogoProgress] = useState(0);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuPanelRef = useRef<HTMLElement | null>(null);
@@ -26,13 +36,17 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > HOME_LOGO_REVEAL_THRESHOLD);
+      const y = window.scrollY;
+      setScrolled(y > HOME_LOGO_REVEAL_THRESHOLD);
+      if (isHome) {
+        setLogoProgress(Math.min(1, Math.max(0, y / LOGO_TRANSITION_PX)));
+      }
     };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHome]);
 
   // Close menu when navigating to a different page.
   // React-recommended pattern: adjust state during render instead of in an effect.
@@ -84,7 +98,34 @@ export default function Header() {
     };
   }, []);
 
-  const showLogo = !isHome || scrolled;
+  // --- Logo scroll transition ---
+  // p = 0 → logo is large and centred in the viewport (home page, top)
+  // p = 1 → logo is small in the top-left header corner
+  const p = isHome ? logoProgress : 1;
+
+  // Fraction still to travel towards the centre (1 at top, 0 when fully in header)
+  const frac = (1 - p).toFixed(6);
+
+  // The element's resting centre inside the header (viewport coords, since header is position:fixed):
+  //   x = headerPadding + SMALL/2  →  clamp(1rem, 3vw, 2.25rem) + 18px
+  //   y = HEADER_HEIGHT / 2        →  50px
+  // We translate from that resting position towards the viewport centre:
+  //   tx_full = 50vw − headerPadding − 18px
+  //   ty_full = 50vh − 50px
+  const logoTx =
+    p < 1
+      ? `calc((50vw - clamp(1rem, 3vw, 2.25rem) - ${SMALL_LOGO_SIZE / 2}px) * ${frac})`
+      : "0px";
+  const logoTy =
+    p < 1
+      ? `calc((50vh - ${HEADER_HEIGHT / 2}px) * ${frac})`
+      : "0px";
+  const logoScale = 1 + (LARGE_LOGO_SIZE / SMALL_LOGO_SIZE - 1) * (1 - p);
+  const logoTransform =
+    p >= 1 ? "none" : `translate(${logoTx}, ${logoTy}) scale(${logoScale})`;
+
+  // Fade centre text in as the logo travels into the header
+  const centreTextOpacity = isHome ? p : 1;
 
   const handleMenuNavigation = (href: string) => {
     setMenuOpen(false);
@@ -122,10 +163,11 @@ export default function Header() {
     >
       <Link
         href="/"
-        className="transition-all duration-500"
         style={{
-          opacity: showLogo ? 1 : 0,
-          pointerEvents: showLogo ? "auto" : "none",
+          display: "inline-block",
+          transform: logoTransform,
+          willChange: "transform",
+          zIndex: 10,
         }}
       >
         <Image
@@ -150,6 +192,8 @@ export default function Header() {
           maxWidth: "70vw",
           overflow: "hidden",
           textOverflow: "ellipsis",
+          opacity: centreTextOpacity,
+          transition: "opacity 0.15s linear",
         }}
       >
         DUS ARKITEKTER
