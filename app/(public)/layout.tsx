@@ -11,9 +11,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <>
       <Header />
-      <main style={{ paddingTop: isHome ? undefined : "var(--header-offset)" }}>
-        {children}
-      </main>
+      <main className={isHome ? undefined : "pt-[var(--header-offset)]"}>{children}</main>
       <Footer />
     </>
   );

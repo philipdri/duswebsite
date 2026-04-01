@@ -16,21 +16,10 @@ export default function ScrollToTop() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-8 right-8 z-50 transition-all duration-300 font-classico text-xs tracking-widest hover:cursor-pointer"
-      style={{
-        opacity: visible ? 1 : 0,
-        pointerEvents: visible ? "auto" : "none",
-        color: "#000",
-        background: "#fff",
-        border: "1px solid gray",
-        borderRadius: "50%",
-        padding: "0.5rem 1rem",
-        letterSpacing: "0.2em",
-        fontWeight: 300,
-      }}
+      className={`fixed bottom-6 right-4 z-50 rounded-full border border-gray-500 bg-white px-4 py-2 font-classico text-xs font-light tracking-[0.2em] text-black transition-all duration-300 hover:cursor-pointer sm:bottom-8 sm:right-8 ${visible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
       aria-label="Scroll to top"
     >
-      ↑
+      {"\u2191"}
     </button>
   );
 }

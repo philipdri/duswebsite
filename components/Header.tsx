@@ -33,6 +33,10 @@ export default function Header() {
     { href: "/#omoss", label: "OM OSS" },
     { href: "/#kontakt", label: "KONTAKT" },
   ];
+  const menuItemBaseClass =
+    "flex max-w-full flex-col items-center gap-4 px-0 py-[0.2rem] text-center font-classico text-[clamp(1.2rem,3.2vw,1.45rem)] font-light leading-none tracking-[0.12em] text-black transition-opacity duration-[250ms] [overflow-wrap:anywhere]";
+  const menuUnderlineBaseClass =
+    "block h-px w-full max-w-32 origin-center bg-current transition-transform duration-300";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,19 +103,19 @@ export default function Header() {
   }, []);
 
   // --- Logo scroll transition ---
-  // p = 0 → logo is large and centred in the viewport (home page, top)
-  // p = 1 → logo is small in the top-left header corner
+  // p = 0 -> logo is large and centred in the viewport (home page, top)
+  // p = 1 -> logo is small in the top-left header corner
   const p = isHome ? logoProgress : 1;
 
   // Fraction still to travel towards the centre (1 at top, 0 when fully in header)
   const frac = (1 - p).toFixed(6);
 
   // The element's resting centre inside the header (viewport coords, since header is position:fixed):
-  //   x = headerPadding + SMALL/2  →  clamp(1rem, 3vw, 2.25rem) + 18px
-  //   y = HEADER_HEIGHT / 2        →  50px
+  //   x = headerPadding + SMALL/2  ->  clamp(1rem, 3vw, 2.25rem) + 18px
+  //   y = HEADER_HEIGHT / 2        ->  50px
   // We translate from that resting position towards the viewport centre:
-  //   tx_full = 50vw − headerPadding − 18px
-  //   ty_full = 50vh − 50px
+  //   tx_full = 50vw - headerPadding - 18px
+  //   ty_full = 50vh - 50px
   const logoTx =
     p < 1
       ? `calc((50vw - clamp(1rem, 3vw, 2.25rem) - ${SMALL_LOGO_SIZE / 2}px) * ${frac})`
@@ -149,23 +153,15 @@ export default function Header() {
 
   return (
     <header
-      className="fixed left-0 top-0 z-[200] flex w-full items-center justify-between"
+      className="fixed left-0 top-0 z-[200] flex h-[var(--header-height)] w-full items-center justify-between bg-dus-bg px-[clamp(1rem,3vw,2.25rem)] transition-shadow duration-300"
       style={{
-        backgroundColor: "#f7f4f0",
-        height: "var(--header-height)",
-        paddingInline: "clamp(1rem, 3vw, 2.25rem)",
         boxShadow: scrolled || menuOpen ? "0 2px 10px rgba(0,0,0,0.1)" : "none",
-        transition: "box-shadow 0.3s ease",
       }}
     >
       <Link
         href="/"
-        style={{
-          display: "inline-block",
-          transform: logoTransform,
-          willChange: "transform",
-          zIndex: 10,
-        }}
+        className="z-10 inline-block will-change-transform"
+        style={{ transform: logoTransform }}
       >
         <Image
           src="/img/logo_lys.png"
@@ -173,95 +169,52 @@ export default function Header() {
           width={36}
           height={36}
           unoptimized
-          style={{ width: "36px", height: "auto" }}
+          className="h-auto w-9"
         />
       </Link>
 
       <Link
         href="/"
-        className="absolute left-1/2 -translate-x-1/2 font-classico tracking-widest"
+        className="absolute left-1/2 max-w-[70vw] -translate-x-1/2 overflow-hidden text-ellipsis whitespace-nowrap font-classico text-[clamp(10px,2.4vw,14px)] font-light tracking-[0.2em] text-black transition-opacity duration-150"
         style={{
-          color: "#000",
-          letterSpacing: "0.2em",
-          fontWeight: 300,
-          fontSize: "clamp(10px, 2.4vw, 14px)",
-          whiteSpace: "nowrap",
-          maxWidth: "70vw",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
           opacity: centreTextOpacity,
-          transition: "opacity 0.15s linear",
         }}
       >
         DUS ARKITEKTER
       </Link>
 
-      <div
-        key={pathname ?? "mobile-nav"}
-        className="relative z-230 flex items-center"
-        ref={menuRef}
-      >
+      <div key={pathname ?? "mobile-nav"} className="relative z-[230] flex items-center" ref={menuRef}>
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className="inline-flex items-center justify-center"
+          className="relative z-[230] inline-flex min-h-14 min-w-14 items-center justify-center border-0 bg-transparent py-2 text-black"
           aria-expanded={menuOpen}
           aria-controls="mobile-nav-panel"
           aria-label={menuOpen ? "Lukk meny" : "Apne meny"}
-          style={{
-            color: "#000",
-            backgroundColor: "transparent",
-            border: "none",
-            padding: "0.5rem 0",
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minWidth: "56px",
-            minHeight: "56px",
-            position: "relative",
-            zIndex: 230,
-          }}
         >
-          <span
-            className="flex flex-col items-center justify-center gap-1.25"
-            aria-hidden
-            style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-          >
+          <span className="flex flex-col items-center justify-center gap-[5px]" aria-hidden>
             <span
-              className="transition-all duration-300"
+              className="block h-[2.5px] w-8 bg-black transition-all duration-300"
               style={{
-                display: "block",
-                backgroundColor: "#000",
-                height: "2.5px",
-                width: "32px",
                 transform: menuOpen ? "translateY(6px) rotate(45deg)" : "none",
               }}
             />
             <span
-              className="transition-all duration-300"
+              className="block h-[2.5px] w-8 bg-black transition-all duration-300"
               style={{
-                display: "block",
-                backgroundColor: "#000",
-                height: "2.5px",
-                width: "32px",
                 opacity: menuOpen ? 0 : 1,
               }}
             />
             <span
-              className="transition-all duration-300"
+              className="block h-[2.5px] w-8 bg-black transition-all duration-300"
               style={{
-                display: "block",
-                backgroundColor: "#000",
-                height: "2.5px",
-                width: "32px",
                 transform: menuOpen
                   ? "translateY(-6px) rotate(-45deg)"
                   : "none",
               }}
             />
           </span>
-          <span className="sr-only font-classico" style={{ fontWeight: 300 }}>
+          <span className="sr-only font-classico font-light">
             {menuOpen ? "Lukk meny" : "Apne meny"}
           </span>
         </button>
@@ -269,57 +222,27 @@ export default function Header() {
 
       <div
         id="mobile-nav-panel"
-        className="fixed inset-0 z-[220]"
+        className="fixed inset-0 z-[220] overflow-hidden bg-dus-bg"
         aria-hidden={!menuOpen}
         style={{
-          backgroundColor: "#f7f4f0",
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? "auto" : "none",
           transform: menuOpen
             ? "translate3d(0, 0, 0)"
             : "translate3d(0, -100%, 0)",
           transition: "transform 0.45s ease, opacity 0.3s ease",
-          overflow: "hidden",
-          inset: 0,
         }}
       >
         <nav
           ref={menuPanelRef}
-          className="flex h-min w-full flex-col items-center justify-center"
-          style={{
-            padding: "calc(var(--header-height)) 2rem 3rem",
-            gap: "3.0rem",
-            boxSizing: "border-box",
-            overflowX: "hidden",
-          }}
+          className="box-border flex h-min w-full flex-col items-center justify-center gap-12 overflow-x-hidden px-8 pb-12 pt-[var(--header-height)]"
         >
           {links.map((item) =>
             item.href.startsWith("/#") ? (
               <button
                 key={item.href}
                 type="button"
-                className="font-classico"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "0.9rem",
-                  color: "#000",
-                  fontFamily: '"classico-urw", sans-serif',
-                  letterSpacing: "0.12em",
-                  fontWeight: 300,
-                  fontSize: "clamp(1.2rem, 3.2vw, 1.45rem)",
-                  lineHeight: 1,
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  overflowWrap: "anywhere",
-                  backgroundColor: "transparent",
-                  border: "none",
-                  padding: "0.2rem 0",
-                  cursor: "pointer",
-                  opacity: hoveredItem === item.href ? 0.65 : 1,
-                  transition: "opacity 0.25s ease",
-                }}
+                className={`${menuItemBaseClass} border-0 bg-transparent ${hoveredItem === item.href ? "opacity-[0.65]" : "opacity-100"}`}
                 onMouseEnter={() => setHoveredItem(item.href)}
                 onMouseLeave={() => setHoveredItem(null)}
                 onClick={() => handleMenuNavigation(item.href)}
@@ -327,39 +250,14 @@ export default function Header() {
                 <span>{item.label}</span>
                 <span
                   aria-hidden
-                  className="block h-px origin-center bg-current transition-transform duration-300"
-                  style={{
-                    width: "min(8rem, 100%)",
-                    transform:
-                      hoveredItem === item.href ? "scaleX(1)" : "scaleX(0)",
-                  }}
+                  className={`${menuUnderlineBaseClass} ${hoveredItem === item.href ? "scale-x-100" : "scale-x-0"}`}
                 />
               </button>
             ) : (
               <Link
                 key={item.href}
                 href={item.href}
-                className="font-classico"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "0.9rem",
-                  color: "#000",
-                  fontFamily: '"classico-urw", sans-serif',
-                  letterSpacing: "0.12em",
-                  fontWeight: 300,
-                  fontSize: "clamp(1.2rem, 3.2vw, 1.45rem)",
-                  lineHeight: 1,
-                  textAlign: "center",
-                  maxWidth: "100%",
-                  overflowWrap: "anywhere",
-                  cursor: "pointer",
-                  opacity: hoveredItem === item.href ? 0.65 : 1,
-                  transition: "opacity 0.25s ease",
-                  textDecoration: "none",
-                  padding: "0.2rem 0",
-                }}
+                className={`${menuItemBaseClass} no-underline ${hoveredItem === item.href ? "opacity-[0.65]" : "opacity-100"}`}
                 onMouseEnter={() => setHoveredItem(item.href)}
                 onMouseLeave={() => setHoveredItem(null)}
                 onClick={() => setMenuOpen(false)}
@@ -367,12 +265,7 @@ export default function Header() {
                 <span>{item.label}</span>
                 <span
                   aria-hidden
-                  className="block h-px origin-center bg-current transition-transform duration-300"
-                  style={{
-                    width: "min(8rem, 100%)",
-                    transform:
-                      hoveredItem === item.href ? "scaleX(1)" : "scaleX(0)",
-                  }}
+                  className={`${menuUnderlineBaseClass} ${hoveredItem === item.href ? "scale-x-100" : "scale-x-0"}`}
                 />
               </Link>
             ),

@@ -1,85 +1,48 @@
-import Link from 'next/link'
-import { getServices } from '@/lib/content-db'
+import Link from "next/link";
+import { getServices } from "@/lib/content-db";
+import {
+  adminCard,
+  adminLead,
+  adminPageShell,
+  adminPrimaryButton,
+  adminTitle,
+} from "../adminStyles";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default async function TjenesterAdminPage() {
-  const services = await getServices()
+  const services = await getServices();
 
   return (
-    <div style={{ padding: '32px', maxWidth: '900px' }}>
-      <h1
-        style={{
-          fontWeight: 300,
-          fontSize: '1.5rem',
-          letterSpacing: '0.1em',
-          marginBottom: '8px',
-          color: '#000',
-        }}
-      >
-        Tjenester
-      </h1>
-      <p style={{ color: '#666', fontSize: '0.85rem', marginBottom: '32px' }}>
-        Rediger tjenestene som vises på Tjenester-siden.
-      </p>
+    <div className={adminPageShell}>
+      <h1 className={adminTitle}>Tjenester</h1>
+      <p className={adminLead}>Rediger tjenestene som vises p{"\u00e5"} Tjenester-siden.</p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', backgroundColor: '#e0e0e0' }}>
+      <div className="flex flex-col gap-px bg-[#e0e0e0]">
         {services.map((service) => (
           <div
             key={service.id}
-            style={{
-              backgroundColor: '#fff',
-              padding: '20px 24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '16px',
-            }}
+            className={`${adminCard} flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6`}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, minWidth: 0 }}>
+            <div className="flex min-w-0 flex-1 items-center gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={service.image}
                 alt={service.title}
-                style={{ width: '60px', height: '40px', objectFit: 'cover', flexShrink: 0 }}
+                className="h-10 w-[60px] shrink-0 object-cover"
               />
-              <div style={{ minWidth: 0 }}>
-                <p
-                  style={{
-                    margin: 0,
-                    fontWeight: 400,
-                    fontSize: '0.9rem',
-                    letterSpacing: '0.05em',
-                    color: '#000',
-                  }}
-                >
+              <div className="min-w-0">
+                <p className="m-0 text-[0.9rem] font-normal tracking-[0.05em] text-black">
                   {service.title}
                 </p>
-                <p
-                  style={{
-                    margin: '4px 0 0',
-                    fontSize: '0.78rem',
-                    color: '#737373',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
+                <p className="mt-1 overflow-hidden text-ellipsis whitespace-nowrap text-[0.78rem] text-dus-muted">
                   {service.description}
                 </p>
               </div>
             </div>
             <Link
               href={`/admin/tjenester/${service.id}/edit`}
-              style={{
-                padding: '8px 20px',
-                backgroundColor: '#000',
-                color: '#fff',
-                textDecoration: 'none',
-                fontSize: '0.72rem',
-                letterSpacing: '0.1em',
-                flexShrink: 0,
-              }}
+              className={`${adminPrimaryButton} shrink-0 px-5 py-2 text-[0.72rem]`}
             >
               REDIGER
             </Link>
@@ -87,5 +50,5 @@ export default async function TjenesterAdminPage() {
         ))}
       </div>
     </div>
-  )
+  );
 }

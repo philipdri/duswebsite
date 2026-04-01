@@ -9,7 +9,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -34,8 +34,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: title ? `${title} — DUS Arkitekter` : 'DUS Arkitekter',
-    description: description || 'DUS Arkitekter – arkitektur i harmoni med omgivelsene.',
+    title: title ? `${title} \u2014 DUS Arkitekter` : "DUS Arkitekter",
+    description:
+      description || "DUS Arkitekter \u2013 arkitektur i harmoni med omgivelsene.",
   };
 }
 
@@ -51,7 +52,7 @@ export default async function ProjectPage({ params }: Props) {
     images: { src: string; caption: string | null }[];
   } | null = null;
 
-  function toProjectFromStatic(p: typeof import('@/lib/projects').projects[number]) {
+  function toProjectFromStatic(p: typeof import("@/lib/projects").projects[number]) {
     return {
       title: p.title,
       description: p.description,
@@ -64,7 +65,7 @@ export default async function ProjectPage({ params }: Props) {
   try {
     project = await getPublishedProjectBySlug(slug);
   } catch {
-    // DB unavailable — fall back to static
+    // DB unavailable - fall back to static
     const staticProject = getProjectBySlug(slug);
     if (staticProject) project = toProjectFromStatic(staticProject);
   }
@@ -80,52 +81,58 @@ export default async function ProjectPage({ params }: Props) {
   }
 
   return (
-    <div
-      style={{
-        paddingTop: '60px',
-        backgroundColor: '#f7f4f0',
-        minHeight: '100vh',
-        paddingBottom: '80px',
-      }}
-    >
-      <div style={{ maxWidth: '64rem', margin: '0 auto', paddingLeft: '2rem', paddingRight: '2rem' }}>
+    <div className="min-h-screen bg-dus-bg px-4 pb-20 pt-[60px] sm:px-8">
+      <div className="mx-auto max-w-5xl">
         <Link
           href="/#prosjekter"
-          style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 300, fontSize: '0.75rem', fontFamily: '"classico-urw", sans-serif', display: 'inline-block', marginBottom: '3rem', textDecoration: 'none' }}
+          className="mb-12 inline-block font-classico text-xs font-light tracking-[0.2em] text-dus-muted no-underline"
         >
-          ← TILBAKE
+          {"\u2190 TILBAKE"}
         </Link>
 
-        <h1
-          style={{ color: '#000', letterSpacing: '0.15em', fontWeight: 300, fontSize: '1.5rem', marginTop: '1.5rem', marginBottom: '1rem', fontFamily: '"classico-urw", sans-serif' }}
-        >
+        <h1 className="mb-4 mt-6 font-classico text-2xl font-light tracking-[0.15em] text-black">
           {project.title}
         </h1>
 
-        <div style={{ marginTop: '3rem', marginBottom: '3rem' }}>
-          <ProjectSlideshow images={project.images.map((img) => ({ src: img.src, caption: img.caption ?? '' }))} />
+        <div className="my-12">
+          <ProjectSlideshow
+            images={project.images.map((img) => ({
+              src: img.src,
+              caption: img.caption ?? "",
+            }))}
+          />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', marginTop: '3rem', marginBottom: '3rem', paddingTop: '2rem', paddingBottom: '2rem', borderTop: '1px solid #666669', borderBottom: '1px solid #666669' }}>
+        <div className="my-12 grid gap-6 border-y border-dus-border py-8 md:grid-cols-3 md:gap-8">
           <div>
-            <p style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400, fontSize: '0.75rem', marginBottom: '0.5rem', fontFamily: '"classico-urw", sans-serif' }}>PROSJEKT</p>
-            <p style={{ color: '#000', fontWeight: 300, fontSize: '0.875rem', fontFamily: '"classico-urw", sans-serif' }}>{project.title}</p>
+            <p className="mb-2 font-classico text-xs font-normal tracking-[0.2em] text-dus-muted">
+              PROSJEKT
+            </p>
+            <p className="font-classico text-sm font-light text-black">{project.title}</p>
           </div>
           <div>
-            <p style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400, fontSize: '0.75rem', marginBottom: '0.5rem', fontFamily: '"classico-urw", sans-serif' }}>STED</p>
-            <p style={{ color: '#000', fontWeight: 300, fontSize: '0.875rem', fontFamily: '"classico-urw", sans-serif' }}>{project.location || '—'}</p>
+            <p className="mb-2 font-classico text-xs font-normal tracking-[0.2em] text-dus-muted">
+              STED
+            </p>
+            <p className="font-classico text-sm font-light text-black">
+              {project.location || "\u2014"}
+            </p>
           </div>
           <div>
-            <p style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 400, fontSize: '0.75rem', marginBottom: '0.5rem', fontFamily: '"classico-urw", sans-serif' }}>ÅRSTALL</p>
-            <p style={{ color: '#000', fontWeight: 300, fontSize: '0.875rem', fontFamily: '"classico-urw", sans-serif' }}>{project.year || '—'}</p>
+            <p className="mb-2 font-classico text-xs font-normal tracking-[0.2em] text-dus-muted">
+              {"\u00c5RSTALL"}
+            </p>
+            <p className="font-classico text-sm font-light text-black">
+              {project.year || "\u2014"}
+            </p>
           </div>
         </div>
 
-        <div style={{ maxWidth: '42rem' }}>
-          {(project.description || '').split('\n\n').map((paragraph, i) => (
+        <div className="max-w-2xl">
+          {(project.description || "").split("\n\n").map((paragraph, i) => (
             <p
               key={i}
-              style={{ color: '#434343', fontWeight: 300, fontSize: '1rem', lineHeight: '1.9', marginBottom: '1rem', fontFamily: '"classico-urw", sans-serif' }}
+              className="mb-4 font-classico text-base font-light leading-[1.9] text-[#434343] last:mb-0"
             >
               {paragraph}
             </p>

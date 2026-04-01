@@ -8,36 +8,9 @@ export default async function TjenesterPage() {
   ]);
 
   return (
-    <div
-      style={{
-        backgroundColor: "#f7f4f0",
-        minHeight: "110vh",
-      }}
-    >
-      <div
-        style={{
-          paddingTop: "5%",
-          paddingLeft: "7%",
-          paddingRight: "7%",
-          width: "85%",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignContent: "flex-start",
-          boxSizing: "border-box",
-        }}
-      >
-        <p
-          className="font-classico"
-          style={{
-            fontWeight: 200,
-            lineHeight: "1.4",
-            color: "#000000",
-            fontSize: "clamp(10px, 2.5vw, 30px)",
-            textAlign: "left",
-            width: "55%",
-          }}
-        >
+    <div className="min-h-[110vh] bg-dus-bg">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pt-12 sm:px-[7%] sm:pt-16 lg:w-[85%] lg:flex-row lg:items-start lg:justify-between lg:pt-[5%]">
+        <p className="w-full font-classico text-[clamp(10px,2.5vw,30px)] font-extralight leading-[1.4] text-dus-text lg:w-[55%]">
           {introText}
         </p>
         <Image
@@ -45,72 +18,20 @@ export default async function TjenesterPage() {
           alt="Byplanlegging illustrasjon"
           width={400}
           height={300}
-          style={{
-            width: "30%",
-
-            objectFit: "cover",
-          }}
+          className="h-auto w-full object-cover lg:w-[30%]"
         />
       </div>
-      <div
-        className="font-classico"
-        style={{
-          paddingLeft: "12%",
-          paddingRight: "12%",
-          marginTop: "5%",
-          marginBottom: "5%",
-          display: "flex",
-          flexDirection: "column",
-          gap: "0",
-        }}
-      >
+      <div className="mx-auto my-12 flex w-full max-w-6xl flex-col gap-0 px-4 font-classico sm:px-[12%] lg:my-[5%]">
         {services.map((service, index) => (
           <div
             key={service.id}
-            style={{
-              position: "relative",
-              width: "100%",
-              display: "flex",
-              flexDirection: index % 2 !== 0 ? "row-reverse" : "row",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-
-              marginBottom: "5%",
-              borderTop: "1px solid #666669",
-              boxSizing: "border-box",
-              paddingTop: "3%",
-              opacity: 1,
-            }}
+            className={`relative mb-10 flex w-full flex-col gap-6 border-t border-dus-border pt-6 lg:mb-[5%] lg:flex-row lg:items-start lg:justify-between lg:pt-[3%] ${index % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "flex-start",
-                width: "40%",
-              }}
-            >
-              <h2
-                className="font-classico"
-                style={{
-                  fontSize: "1.1vw",
-                  textAlign: "left",
-                  color: "black",
-                  fontWeight: 400,
-                }}
-              >
+            <div className="flex w-full flex-col items-start justify-center lg:w-[40%]">
+              <h2 className="font-classico text-base font-normal text-black sm:text-lg lg:text-[1.1vw]">
                 {service.title}
               </h2>
-              <p
-                className="font-classico"
-                style={{
-                  color: "#737373",
-                  fontWeight: 300,
-                  fontSize: "0.9rem",
-                  lineHeight: "1.8",
-                }}
-              >
+              <p className="font-classico text-[0.9rem] font-light leading-[1.8] text-dus-muted">
                 {service.description}
               </p>
             </div>
@@ -118,12 +39,7 @@ export default async function TjenesterPage() {
             <img
               src={service.image}
               alt={service.title}
-              style={{
-                display: "block",
-                height: "auto",
-                maxWidth: "40%",
-                transition: "1.0s ease",
-              }}
+              className="block h-auto w-full max-w-full transition duration-1000 ease-in-out lg:max-w-[40%]"
             />
           </div>
         ))}

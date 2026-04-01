@@ -20,18 +20,13 @@ export default function PublishButton({ id }: { id: string }) {
           router.refresh()
         })
       }}
-      style={{
-        padding: '3px 10px',
-        fontSize: '0.65rem',
-        letterSpacing: '0.1em',
-        border: '1px solid #e5e5e5',
-        backgroundColor: isPending ? '#f0f0f0' : '#f9f9f9',
-        color: '#737373',
-        cursor: isPending ? 'default' : 'pointer',
-        opacity: isPending ? 0.6 : 1,
-      }}
+      className={`inline-flex items-center justify-center border px-2.5 py-1 text-[0.65rem] tracking-[0.1em] ${
+        isPending
+          ? 'cursor-default border-[#e5e5e5] bg-[#f0f0f0] text-dus-muted opacity-60'
+          : 'border-[#e5e5e5] bg-[#f9f9f9] text-dus-muted'
+      }`}
     >
-      {isPending ? '…' : 'UTKAST'}
+      {isPending ? '...' : 'UTKAST'}
     </button>
   )
 }
