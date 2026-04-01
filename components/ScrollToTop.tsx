@@ -30,7 +30,7 @@ export default function ScrollToTop() {
       }}
       aria-label="Scroll to top"
     >
-      ↑ TOPP
+      ↑
     </button>
   );
 }
