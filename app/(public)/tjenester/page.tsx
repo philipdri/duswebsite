@@ -14,11 +14,11 @@ export default async function TjenesterPage() {
           {introText}
         </p>
         <Image
-          src="/img/byplanlegging.jpg"
+          src="/img/logo_lys.png"
           alt="Byplanlegging illustrasjon"
           width={400}
           height={300}
-          className="h-auto w-full object-cover lg:w-[30%]"
+          className="hidden h-auto w-full object-cover lg:block lg:w-[30%]"
         />
       </div>
       <div className="mx-auto my-12 flex w-full max-w-6xl flex-col gap-0 px-4 font-classico sm:px-[12%] lg:my-[5%]">
