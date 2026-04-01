@@ -9,42 +9,25 @@ export default async function AboutSection() {
   const rawText = await getSiteContent("about_text");
   const paragraphs = rawText.split(/\n{2,}/).filter(Boolean);
   const imageShadowClass = "shadow-[0_4px_10px_rgba(0,0,0,0.1)]";
+  const bodyTextClass =
+    "px-3 font-classico text-[clamp(10px,2vw,15px)] font-light leading-[1.8] text-[#434343] sm:px-[10%]";
 
   return (
     <section
       id="omoss"
-      className="relative mx-4 mt-12 rounded-t-[50px] px-4 py-10 sm:mx-[5%] sm:mt-[80px] sm:px-[40px] sm:py-[80px]"
-      style={{
-        backgroundColor: "#f7f4f0",
-        boxShadow: "0 -2px 15px rgba(0,0,0,0.1)",
-      }}
+      className="relative mx-4 mt-12 rounded-t-[50px] bg-dus-bg px-4 py-10 shadow-[0_-2px_15px_rgba(0,0,0,0.1)] sm:mx-[5%] sm:mt-[80px] sm:px-[40px] sm:py-[80px]"
     >
       <div className="max-w-4xl mx-auto">
         <h2
           id="overskrift_omoss"
-          className="font-classico mb-8 px-3 sm:px-[10%]"
-          style={{
-            color: "#000",
-            fontWeight: 400,
-            fontSize: "clamp(7px, 3vw, 60px)",
-          }}
+          className="mb-8 px-3 font-classico text-[clamp(7px,3vw,60px)] font-normal text-black sm:px-[10%]"
         >
           {heading}
         </h2>
         <div className="flex flex-col gap-12">
           <div>
             {paragraphs.map((para, i) => (
-              <p
-                key={i}
-                className="font-classico leading-relaxed px-3 sm:px-[10%]"
-                style={{
-                  color: "#434343",
-                  fontWeight: 300,
-                  fontSize: "clamp(10px, 2vw, 15px)",
-                  lineHeight: "1.8",
-                  marginBottom: i < paragraphs.length - 1 ? "1em" : 0,
-                }}
-              >
+              <p key={i} className={`${bodyTextClass} ${i < paragraphs.length - 1 ? "mb-4" : ""}`}>
                 {para}
               </p>
             ))}

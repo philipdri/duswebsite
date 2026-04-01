@@ -1,28 +1,37 @@
-import Link from 'next/link'
-import { prisma } from '@/lib/db'
-import DeleteProjectButton from './components/DeleteProjectButton'
-import SortableProjectList from './components/SortableProjectList'
-import PublishButton from './components/PublishButton'
+import Link from "next/link";
+import { prisma } from "@/lib/db";
+import DeleteProjectButton from "./components/DeleteProjectButton";
+import SortableProjectList from "./components/SortableProjectList";
+import PublishButton from "./components/PublishButton";
+import {
+  adminCard,
+  adminPageShellWide,
+  adminPrimaryButton,
+  adminTableCell,
+  adminTableHead,
+  adminTitle,
+  adminWarningAlert,
+} from "../adminStyles";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 async function getProjects() {
   try {
     return await prisma.project.findMany({
-      orderBy: [{ sortOrder: 'asc' }, { createdAt: 'desc' }],
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       include: { images: { select: { id: true } } },
-    })
+    });
   } catch {
-    return null
+    return null;
   }
 }
 
 export default async function AdminProjectsPage() {
-  const projects = await getProjects()
+  const projects = await getProjects();
 
-  type ProjectRow = NonNullable<typeof projects>[number]
-  const published = projects?.filter((p: ProjectRow) => p.published) ?? []
-  const drafts = projects?.filter((p: ProjectRow) => !p.published) ?? []
+  type ProjectRow = NonNullable<typeof projects>[number];
+  const published = projects?.filter((p: ProjectRow) => p.published) ?? [];
+  const drafts = projects?.filter((p: ProjectRow) => !p.published) ?? [];
 
   const toRow = (p: NonNullable<typeof projects>[number]) => ({
     id: p.id,
@@ -32,166 +41,101 @@ export default async function AdminProjectsPage() {
     location: p.location,
     published: p.published,
     imageCount: p.images.length,
-  })
+  });
 
-  const headStyle = {
-    padding: '12px 16px',
-    textAlign: 'left' as const,
-    fontSize: '0.65rem',
-    letterSpacing: '0.15em',
-    color: '#737373',
-    fontWeight: 400,
-  }
-  const cellStyle = { padding: '12px 16px', fontSize: '0.8rem', color: '#737373' }
+  const sectionHeadingClass =
+    "mb-3 text-[0.7rem] font-normal uppercase tracking-[0.2em] text-dus-muted";
+  const emptyCardClass =
+    "border border-[#e5e5e5] bg-white px-8 py-8 text-center text-[0.85rem] text-dus-muted";
 
   return (
-    <div style={{ padding: '32px', maxWidth: '1100px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-        <h1 style={{ fontWeight: 300, fontSize: '1.5rem', letterSpacing: '0.1em', color: '#000', margin: 0 }}>
-          Prosjekter
-        </h1>
-        <Link
-          href="/admin/projects/new"
-          style={{
-            padding: '8px 20px',
-            backgroundColor: '#000',
-            color: '#fff',
-            textDecoration: 'none',
-            fontSize: '0.75rem',
-            letterSpacing: '0.15em',
-          }}
-        >
+    <div className={adminPageShellWide}>
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <h1 className={adminTitle}>Prosjekter</h1>
+        <Link href="/admin/projects/new" className={`${adminPrimaryButton} px-5 py-2`}>
           + NYTT PROSJEKT
         </Link>
       </div>
 
       {projects === null && (
-        <div
-          style={{
-            backgroundColor: '#fff3cd',
-            border: '1px solid #ffc107',
-            padding: '16px',
-            fontSize: '0.85rem',
-            color: '#856404',
-          }}
-        >
-          <strong>Database ikke tilkoblet.</strong> Sett opp DATABASE_URL i .env.
+        <div className={adminWarningAlert}>
+          <strong>Database ikke tilkoblet.</strong> Sett opp `DATABASE_URL` i `.env`.
         </div>
       )}
 
       {projects !== null && (
         <>
-          {/* Published / portfolio list */}
-          <div style={{ marginBottom: '40px' }}>
-            <h2
-              style={{
-                fontWeight: 400,
-                fontSize: '0.7rem',
-                letterSpacing: '0.2em',
-                color: '#737373',
-                margin: '0 0 12px',
-                textTransform: 'uppercase',
-              }}
-            >
-              Portfolio (publiserte prosjekter)
-            </h2>
-            <p style={{ fontSize: '0.75rem', color: '#aaa', margin: '0 0 12px' }}>
-              Dra i ⠿-ikonet for å endre rekkefølgen i portfolioen.
+          <div className="mb-10">
+            <h2 className={sectionHeadingClass}>Portfolio (publiserte prosjekter)</h2>
+            <p className="mb-3 text-[0.75rem] text-[#aaa]">
+              Dra i {"\u283f"}-ikonet for {"\u00e5"} endre rekkef{"\u00f8"}lgen i
+              portfolioen.
             </p>
 
             {published.length === 0 ? (
-              <div
-                style={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e5e5e5',
-                  padding: '32px',
-                  textAlign: 'center',
-                  color: '#737373',
-                  fontSize: '0.85rem',
-                }}
-              >
-                Ingen publiserte prosjekter ennå. Publiser et utkast for å legge det til i portfolioen.
+              <div className={emptyCardClass}>
+                Ingen publiserte prosjekter enn{"\u00e5"}. Publiser et utkast for {"\u00e5"}
+                legge det til i portfolioen.
               </div>
             ) : (
-              <SortableProjectList key={published.map((p) => p.id).join(',')} projects={published.map(toRow)} />
+              <SortableProjectList
+                key={published.map((p) => p.id).join(",")}
+                projects={published.map(toRow)}
+              />
             )}
           </div>
 
-          {/* Drafts list */}
           <div>
-            <h2
-              style={{
-                fontWeight: 400,
-                fontSize: '0.7rem',
-                letterSpacing: '0.2em',
-                color: '#737373',
-                margin: '0 0 12px',
-                textTransform: 'uppercase',
-              }}
-            >
-              Utkast (ikke publiserte)
-            </h2>
+            <h2 className={sectionHeadingClass}>Utkast (ikke publiserte)</h2>
 
             {drafts.length === 0 ? (
-              <div
-                style={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e5e5e5',
-                  padding: '32px',
-                  textAlign: 'center',
-                  color: '#737373',
-                  fontSize: '0.85rem',
-                }}
-              >
+              <div className={emptyCardClass}>
                 {projects.length === 0 ? (
                   <>
-                    <p style={{ margin: '0 0 12px' }}>Ingen prosjekter ennå.</p>
+                    <p className="mb-3">Ingen prosjekter enn{"\u00e5"}.</p>
                     <Link
                       href="/admin/projects/new"
-                      style={{ color: '#000', fontSize: '0.8rem', letterSpacing: '0.1em' }}
+                      className="text-[0.8rem] tracking-[0.1em] text-black no-underline"
                     >
-                      Opprett ditt første prosjekt →
+                      Opprett ditt f{"\u00f8"}rste prosjekt {"\u2192"}
                     </Link>
                   </>
                 ) : (
-                  'Ingen utkast.'
+                  "Ingen utkast."
                 )}
               </div>
             ) : (
-              <div style={{ backgroundColor: '#fff', border: '1px solid #e5e5e5' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <div className={`${adminCard} overflow-x-auto`}>
+                <table className="w-full border-collapse">
                   <thead>
-                    <tr style={{ borderBottom: '1px solid #e5e5e5' }}>
-                      {['TITTEL', 'SLUG', 'ÅR', 'STED', 'STATUS', 'BILDER', ''].map((h) => (
-                        <th key={h} style={headStyle}>
-                          {h}
-                        </th>
-                      ))}
+                    <tr className="border-b border-[#e5e5e5]">
+                      {["TITTEL", "SLUG", "\u00c5R", "STED", "STATUS", "BILDER", ""].map(
+                        (h) => (
+                          <th key={h} className={adminTableHead}>
+                            {h}
+                          </th>
+                        ),
+                      )}
                     </tr>
                   </thead>
                   <tbody>
                     {drafts.map((project) => (
-                      <tr key={project.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                        <td style={{ padding: '12px 16px', fontSize: '0.85rem', color: '#000', fontWeight: 400 }}>
+                      <tr key={project.id} className="border-b border-[#f0f0f0]">
+                        <td className="px-4 py-3 text-[0.85rem] font-normal text-black">
                           {project.title}
                         </td>
-                        <td style={{ ...cellStyle, fontFamily: 'monospace' }}>{project.slug}</td>
-                        <td style={cellStyle}>{project.year || '—'}</td>
-                        <td style={cellStyle}>{project.location || '—'}</td>
-                        <td style={{ padding: '12px 16px' }}>
+                        <td className={`${adminTableCell} font-mono`}>{project.slug}</td>
+                        <td className={adminTableCell}>{project.year || "\u2014"}</td>
+                        <td className={adminTableCell}>{project.location || "\u2014"}</td>
+                        <td className="px-4 py-3">
                           <PublishButton id={project.id} />
                         </td>
-                        <td style={cellStyle}>{project.images.length}</td>
-                        <td style={{ padding: '12px 16px' }}>
-                          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <td className={adminTableCell}>{project.images.length}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-3">
                             <Link
                               href={`/admin/projects/${project.id}/edit`}
-                              style={{
-                                color: '#000',
-                                fontSize: '0.75rem',
-                                letterSpacing: '0.1em',
-                                textDecoration: 'none',
-                              }}
+                              className="text-[0.75rem] tracking-[0.1em] text-black no-underline"
                             >
                               REDIGER
                             </Link>
@@ -208,6 +152,5 @@ export default async function AdminProjectsPage() {
         </>
       )}
     </div>
-  )
+  );
 }
-

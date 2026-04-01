@@ -6,50 +6,17 @@ export default function AdminLoginPage() {
   const [state, action, pending] = useActionState(login, null)
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#f7f4f0',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: '#fff',
-          padding: '48px',
-          width: '100%',
-          maxWidth: '400px',
-          border: '1px solid #e5e5e5',
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: 'var(--font-classico, serif)',
-            fontWeight: 300,
-            fontSize: '1.25rem',
-            letterSpacing: '0.2em',
-            color: '#000',
-            marginBottom: '32px',
-          }}
-        >
+    <div className="flex min-h-screen items-center justify-center bg-dus-bg px-4">
+      <div className="w-full max-w-[400px] border border-[#e5e5e5] bg-white p-8 sm:p-12">
+        <h1 className="mb-8 font-classico text-xl font-light tracking-[0.2em] text-black">
           DUS ADMIN
         </h1>
 
         <form action={action}>
-          <div style={{ marginBottom: '16px' }}>
+          <div className="mb-4">
             <label
               htmlFor="password"
-              style={{
-                display: 'block',
-                fontSize: '0.7rem',
-                letterSpacing: '0.15em',
-                color: '#737373',
-                marginBottom: '8px',
-                fontFamily: 'var(--font-classico, serif)',
-                fontWeight: 400,
-              }}
+              className="mb-2 block font-classico text-[0.7rem] font-normal tracking-[0.15em] text-dus-muted"
             >
               PASSORD
             </label>
@@ -58,48 +25,22 @@ export default function AdminLoginPage() {
               name="password"
               type="password"
               required
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: '1px solid #ccc',
-                fontSize: '0.9rem',
-                outline: 'none',
-                boxSizing: 'border-box',
-              }}
+              className="w-full border border-[#ccc] px-3 py-2.5 text-[0.9rem] text-black outline-none"
             />
           </div>
 
           {state?.error && (
-            <p
-              style={{
-                color: '#c0392b',
-                fontSize: '0.8rem',
-                marginBottom: '16px',
-                fontFamily: 'var(--font-classico, serif)',
-              }}
-            >
-              {state.error}
-            </p>
+            <p className="mb-4 font-classico text-[0.8rem] text-[#c0392b]">{state.error}</p>
           )}
 
           <button
             type="submit"
             disabled={pending}
-            style={{
-              width: '100%',
-              padding: '12px',
-              backgroundColor: '#000',
-              color: '#fff',
-              border: 'none',
-              fontSize: '0.7rem',
-              letterSpacing: '0.2em',
-              cursor: pending ? 'not-allowed' : 'pointer',
-              opacity: pending ? 0.6 : 1,
-              fontFamily: 'var(--font-classico, serif)',
-              fontWeight: 400,
-            }}
+            className={`w-full bg-black px-3 py-3 font-classico text-[0.7rem] font-normal tracking-[0.2em] text-white ${
+              pending ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+            }`}
           >
-            {pending ? 'LOGGER INN…' : 'LOGG INN'}
+            {pending ? 'LOGGER INN...' : 'LOGG INN'}
           </button>
         </form>
       </div>

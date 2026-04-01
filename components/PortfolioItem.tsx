@@ -38,47 +38,28 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
   return (
     <div
       ref={ref}
-      className={` margintop:50 portfolio-item flex items-center  ${isReversed ? "portfolio-item-right" : "portfolio-item-left"}`}
-      style={{
-        flexDirection: isReversed ? "row-reverse" : "row",
-        marginTop: "50px",
-      }}
+      className={`portfolio-item mt-12 flex flex-col gap-6 ${isReversed ? "portfolio-item-right md:flex-row-reverse" : "portfolio-item-left md:flex-row"} md:items-center`}
     >
       <Link
         href={`/prosjekter/${project.slug}`}
-        className="block relative overflow-hidden group"
-        style={{ width: "60%", aspectRatio: "4/3" }}
+        className="group relative block aspect-[4/3] w-full overflow-hidden md:w-[60%]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={project.coverImage}
           alt={project.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div
-          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ backgroundColor: "rgba(247,244,240,0.7)" }}
-        >
-          <span
-            className="font-classico tracking-widest text-sm"
-            style={{ color: "#000", letterSpacing: "0.25em", fontWeight: 300 }}
-          >
+        <div className="absolute inset-0 flex items-center justify-center bg-[rgba(247,244,240,0.7)] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <span className="font-classico text-sm font-light tracking-[0.25em] text-black">
             SE PROSJEKT
           </span>
         </div>
       </Link>
       <div
-        className="flex flex-col justify-center py-8"
-        style={{
-          width: "40%",
-          paddingInlineStart: isReversed ? "0" : "clamp(1.5rem, 4vw, 4rem)",
-          paddingInlineEnd: isReversed ? "clamp(1.5rem, 4vw, 4rem)" : "0",
-        }}
+        className={`flex w-full flex-col justify-center py-2 md:w-[40%] md:py-8 ${isReversed ? "md:pr-[clamp(1.5rem,4vw,4rem)]" : "md:pl-[clamp(1.5rem,4vw,4rem)]"}`}
       >
-        <p
-          className="font-classico text-xs tracking-widest mb-4"
-          style={{ color: "#737373", letterSpacing: "0.2em", fontWeight: 300 }}
-        >
+        <p className="mb-4 font-classico text-xs font-light tracking-[0.2em] text-dus-muted">
           {project.portfolioLabel.split(/<br\s*\/?>/i).map((part, i, arr) => (
             <span key={i}>
               {part}
@@ -88,10 +69,9 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
         </p>
         <Link
           href={`/prosjekter/${project.slug}`}
-          className="font-classico text-xs tracking-widest hover:opacity-50 transition-opacity"
-          style={{ color: "#000", letterSpacing: "0.25em", fontWeight: 300 }}
+          className="font-classico text-xs font-light tracking-[0.25em] text-black transition-opacity hover:opacity-50"
         >
-          SE PROSJEKT →
+          SE PROSJEKT {"\u2192"}
         </Link>
       </div>
     </div>

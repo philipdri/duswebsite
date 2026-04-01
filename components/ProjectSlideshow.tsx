@@ -14,61 +14,43 @@ export default function ProjectSlideshow({ images }: ProjectSlideshowProps) {
 
   const prev = () => setCurrent((c) => (c - 1 + images.length) % images.length);
   const next = () => setCurrent((c) => (c + 1) % images.length);
-
-  const buttonStyle: React.CSSProperties = {
-    background: 'none',
-    border: 'none',
-    padding: '0 12px',
-    cursor: 'pointer',
-    color: '#171717',
-    fontSize: '1.25rem',
-    lineHeight: 1,
-    fontFamily: '"classico-urw", sans-serif',
-    letterSpacing: '0.05em',
-    opacity: 0.6,
-    transition: 'opacity 0.2s',
-  };
+  const buttonClassName =
+    'cursor-pointer border-0 bg-transparent px-3 py-0 font-classico text-xl leading-none tracking-[0.05em] text-dus-dark opacity-60 transition-opacity hover:opacity-100';
 
   return (
-    <div style={{ width: '100%' }}>
-      {/* Image */}
-      <div style={{ width: '100%', overflow: 'hidden' }}>
+    <div className="w-full">
+      <div className="w-full overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={images[current].src}
           alt={images[current].caption}
-          style={{ width: '100%', objectFit: 'contain', maxHeight: '70vh', backgroundColor: '#f7f4f0', display: 'block' }}
+          className="block max-h-[70vh] w-full bg-dus-bg object-contain"
         />
       </div>
 
-      {/* Caption + navigation */}
-      <div style={{ marginTop: '16px', textAlign: 'center' }}>
-        <p style={{ color: '#737373', letterSpacing: '0.2em', fontWeight: 300, fontSize: '0.75rem', fontFamily: '"classico-urw", sans-serif', marginBottom: '10px' }}>
+      <div className="mt-4 text-center">
+        <p className="mb-2.5 font-classico text-xs font-light tracking-[0.2em] text-dus-muted">
           {images[current].caption}
         </p>
 
         {images.length > 1 && (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+          <div className="inline-flex items-center gap-1">
             <button
               onClick={prev}
-              style={buttonStyle}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '0.6')}
+              className={buttonClassName}
               aria-label="Previous image"
             >
-              ←
+              {'\u2190'}
             </button>
-            <span style={{ color: '#737373', fontWeight: 300, fontSize: '0.75rem', letterSpacing: '0.15em', fontFamily: '"classico-urw", sans-serif', minWidth: '48px', textAlign: 'center' }}>
+            <span className="min-w-12 text-center font-classico text-xs font-light tracking-[0.15em] text-dus-muted">
               {current + 1} / {images.length}
             </span>
             <button
               onClick={next}
-              style={buttonStyle}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '0.6')}
+              className={buttonClassName}
               aria-label="Next image"
             >
-              →
+              {'\u2192'}
             </button>
           </div>
         )}

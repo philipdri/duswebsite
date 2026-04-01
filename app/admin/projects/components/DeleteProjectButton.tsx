@@ -19,15 +19,7 @@ export default function DeleteProjectButton({ id, title }: DeleteProjectButtonPr
       <input type="hidden" name="id" value={id} />
       <button
         type="submit"
-        style={{
-          background: 'none',
-          border: 'none',
-          color: '#c0392b',
-          fontSize: '0.75rem',
-          letterSpacing: '0.1em',
-          cursor: 'pointer',
-          padding: 0,
-        }}
+        className="border-0 bg-transparent p-0 text-[0.75rem] tracking-[0.1em] text-[#c0392b] transition-opacity hover:opacity-70"
       >
         SLETT
       </button>

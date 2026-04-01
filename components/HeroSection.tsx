@@ -1,22 +1,9 @@
 export default function HeroSection() {
   return (
-    <div
-      className="relative flex items-center justify-center"
-      style={{
-        minHeight: "100svh",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
+    <div className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden">
       <div
-        className="hero-bg"
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: "url(/img/skygge_glød.png)",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
-        }}
+        className="hero-bg absolute inset-0 bg-cover bg-top"
+        style={{ backgroundImage: "url(/img/skygge_gl\u00f8d.png)" }}
       />
     </div>
   );

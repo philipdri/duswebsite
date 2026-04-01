@@ -1,85 +1,54 @@
-import Link from 'next/link'
-import { logout } from '@/app/actions/auth'
+import Link from "next/link";
+import { logout } from "@/app/actions/auth";
 
-export const metadata = { title: 'DUS Admin' }
+export const metadata = { title: "DUS Admin" };
 
-const NAV_HEIGHT = '52px'
+const navLinkClass =
+  "text-xs tracking-[0.1em] text-[#ccc] no-underline transition-opacity hover:opacity-70";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <nav
-        style={{
-          backgroundColor: '#000',
-          color: '#fff',
-          padding: '0 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height: NAV_HEIGHT,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+      <nav className="flex h-[52px] items-center justify-between bg-black px-4 text-white sm:px-6">
+        <div className="flex items-center gap-4 sm:gap-6">
           <Link
             href="/admin"
-            style={{ color: '#fff', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.2em' }}
+            className="text-xs tracking-[0.2em] text-white no-underline transition-opacity hover:opacity-70"
           >
             DUS ADMIN
           </Link>
-          <Link
-            href="/admin/projects"
-            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.1em' }}
-          >
+          <Link href="/admin/projects" className={navLinkClass}>
             PROSJEKTER
           </Link>
-          <Link
-            href="/admin/projects/new"
-            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.1em' }}
-          >
+          <Link href="/admin/projects/new" className={navLinkClass}>
             + NYTT PROSJEKT
           </Link>
-          <Link
-            href="/admin/tjenester"
-            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.1em' }}
-          >
+          <Link href="/admin/tjenester" className={navLinkClass}>
             TJENESTER
           </Link>
-          <Link
-            href="/admin/content"
-            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '0.1em' }}
-          >
+          <Link href="/admin/content" className={navLinkClass}>
             INNHOLD
           </Link>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="flex items-center gap-4">
           <Link
             href="/"
             target="_blank"
-            style={{ color: '#999', textDecoration: 'none', fontSize: '0.7rem', letterSpacing: '0.1em' }}
+            className="text-[0.7rem] tracking-[0.1em] text-[#999] no-underline transition-opacity hover:opacity-70"
           >
-            SE NETTSIDE ↗
+            SE NETTSIDE {"\u2197"}
           </Link>
           <form action={logout}>
             <button
               type="submit"
-              style={{
-                background: 'none',
-                border: '1px solid #444',
-                color: '#ccc',
-                padding: '4px 12px',
-                fontSize: '0.7rem',
-                letterSpacing: '0.1em',
-                cursor: 'pointer',
-              }}
+              className="border border-[#444] bg-transparent px-3 py-1 text-[0.7rem] tracking-[0.1em] text-[#ccc] transition-colors hover:border-[#666] hover:text-white"
             >
               LOGG UT
             </button>
           </form>
         </div>
       </nav>
-      <div style={{ minHeight: `calc(100vh - ${NAV_HEIGHT})`, backgroundColor: '#f7f4f0', fontFamily: 'system-ui, sans-serif' }}>
-        {children}
-      </div>
+      <div className="min-h-[calc(100vh-52px)] bg-dus-bg font-sans">{children}</div>
     </>
-  )
+  );
 }

@@ -1,46 +1,47 @@
-import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { prisma } from '@/lib/db'
-import ProjectForm from '../../components/ProjectForm'
-import { updateProject } from '../../actions'
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { prisma } from "@/lib/db";
+import ProjectForm from "../../components/ProjectForm";
+import { updateProject } from "../../actions";
+import {
+  adminPageShellWide,
+  adminSubtleLink,
+  adminTitle,
+  adminWarningAlert,
+} from "../../../adminStyles";
 
 interface Props {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default async function EditProjectPage({ params }: Props) {
-  const { id } = await params
-  let project = null
-  let dbAvailable = false
+  const { id } = await params;
+  let project = null;
+  let dbAvailable = false;
 
   try {
     project = await prisma.project.findUnique({
       where: { id },
-      include: { images: { orderBy: { order: 'asc' } } },
-    })
-    dbAvailable = true
+      include: { images: { orderBy: { order: "asc" } } },
+    });
+    dbAvailable = true;
   } catch {
     // DB not connected
   }
 
   if (dbAvailable && project === null) {
-    notFound()
+    notFound();
   }
 
   return (
-    <div style={{ padding: '32px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-        <Link
-          href="/admin/projects"
-          style={{ color: '#737373', fontSize: '0.75rem', letterSpacing: '0.1em', textDecoration: 'none' }}
-        >
-          ← PROSJEKTER
+    <div className={adminPageShellWide}>
+      <div className="mb-6 flex flex-wrap items-center gap-4">
+        <Link href="/admin/projects" className={adminSubtleLink}>
+          {"\u2190 PROSJEKTER"}
         </Link>
-        <h1 style={{ fontWeight: 300, fontSize: '1.5rem', letterSpacing: '0.1em', color: '#000', margin: 0 }}>
-          Rediger: {project?.title || id}
-        </h1>
+        <h1 className={adminTitle}>Rediger: {project?.title || id}</h1>
       </div>
       {project ? (
         <ProjectForm
@@ -54,24 +55,17 @@ export default async function EditProjectPage({ params }: Props) {
             year: project.year,
             coverImage: project.coverImage,
             published: project.published,
-            images: project.images.map((img: { src: string; caption: string | null }) => ({ src: img.src, caption: img.caption || '' })),
+            images: project.images.map((img: { src: string; caption: string | null }) => ({
+              src: img.src,
+              caption: img.caption || "",
+            })),
           }}
           action={updateProject}
           submitLabel="LAGRE ENDRINGER"
         />
       ) : (
-        <div
-          style={{
-            backgroundColor: '#fff3cd',
-            border: '1px solid #ffc107',
-            padding: '16px',
-            fontSize: '0.85rem',
-            color: '#856404',
-          }}
-        >
-          Database ikke tilkoblet.
-        </div>
+        <div className={adminWarningAlert}>Database ikke tilkoblet.</div>
       )}
     </div>
-  )
+  );
 }

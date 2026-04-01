@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { reorderProjects, togglePublished } from '../actions'
 import DeleteProjectButton from './DeleteProjectButton'
+import { adminCard, adminTableCell, adminTableHead } from '../../adminStyles'
 
 interface ProjectRow {
   id: string
@@ -15,26 +16,18 @@ interface ProjectRow {
   imageCount: number
 }
 
-const cellStyle = { padding: '12px 16px', fontSize: '0.8rem', color: '#737373' } as const
-const headStyle = {
-  padding: '12px 16px',
-  textAlign: 'left' as const,
-  fontSize: '0.65rem',
-  letterSpacing: '0.15em',
-  color: '#737373',
-  fontWeight: 400,
-} as const
-
 export default function SortableProjectList({ projects: initialProjects }: { projects: ProjectRow[] }) {
   const router = useRouter()
   const [projects, setProjects] = useState(initialProjects)
   const [saving, setSaving] = useState(false)
   const dragId = useRef<string | null>(null)
+  const [draggingId, setDraggingId] = useState<string | null>(null)
   const [dragOverId, setDragOverId] = useState<string | null>(null)
   const [, startTransition] = useTransition()
 
   function handleDragStart(id: string) {
     dragId.current = id
+    setDraggingId(id)
   }
 
   function handleDragOver(e: React.DragEvent, id: string) {
@@ -52,6 +45,7 @@ export default function SortableProjectList({ projects: initialProjects }: { pro
   async function handleDrop(targetId: string) {
     const fromId = dragId.current
     dragId.current = null
+    setDraggingId(null)
     setDragOverId(null)
     if (!fromId || fromId === targetId) return
 
@@ -69,33 +63,24 @@ export default function SortableProjectList({ projects: initialProjects }: { pro
 
   function handleDragEnd() {
     dragId.current = null
+    setDraggingId(null)
     setDragOverId(null)
   }
 
   return (
     <div>
       {saving && (
-        <div
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#f0fdf4',
-            border: '1px solid #bbf7d0',
-            color: '#166534',
-            fontSize: '0.75rem',
-            letterSpacing: '0.1em',
-            marginBottom: '8px',
-          }}
-        >
-          LAGRER REKKEFØLGE…
+        <div className="mb-2 border border-[#bbf7d0] bg-[#f0fdf4] px-4 py-2 text-[0.75rem] tracking-[0.1em] text-[#166534]">
+          LAGRER REKKEF{"\u00d8"}LGE...
         </div>
       )}
-      <div style={{ backgroundColor: '#fff', border: '1px solid #e5e5e5' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className={`${adminCard} overflow-x-auto`}>
+        <table className="w-full border-collapse">
           <thead>
-            <tr style={{ borderBottom: '1px solid #e5e5e5' }}>
-              <th style={{ ...headStyle, width: '32px' }} />
-              {['TITTEL', 'SLUG', 'ÅR', 'STED', 'STATUS', 'BILDER', ''].map((h) => (
-                <th key={h} style={headStyle}>
+            <tr className="border-b border-[#e5e5e5]">
+              <th className={`${adminTableHead} w-8`} />
+              {['TITTEL', 'SLUG', '\u00c5R', 'STED', 'STATUS', 'BILDER', ''].map((h) => (
+                <th key={h} className={adminTableHead}>
                   {h}
                 </th>
               ))}
@@ -111,38 +96,27 @@ export default function SortableProjectList({ projects: initialProjects }: { pro
                 onDragLeave={handleDragLeave}
                 onDrop={() => handleDrop(project.id)}
                 onDragEnd={handleDragEnd}
-                style={{
-                  borderBottom: '1px solid #f0f0f0',
-                  opacity: dragId.current === project.id ? 0.4 : 1,
-                  backgroundColor: dragOverId === project.id ? '#f7f4f0' : 'transparent',
-                  transition: 'background-color 0.1s',
-                }}
+                className={`border-b border-[#f0f0f0] transition-colors ${
+                  dragOverId === project.id ? 'bg-dus-bg' : 'bg-transparent'
+                } ${draggingId === project.id ? 'opacity-40' : 'opacity-100'}`}
               >
                 <td
-                  style={{
-                    padding: '12px 8px 12px 16px',
-                    color: '#aaa',
-                    cursor: 'grab',
-                    userSelect: 'none',
-                    fontSize: '1rem',
-                    lineHeight: 1,
-                  }}
-                  aria-label="Dra for å endre rekkefølge"
-                  title="Dra for å sortere"
+                  className="select-none px-2 py-3 pl-4 text-base leading-none text-[#aaa]"
+                  aria-label={`Dra for \u00e5 endre rekkef\u00f8lge for ${project.title}`}
+                  title="Dra for \u00e5 sortere"
                 >
-                  ⠿
+                  <span className="cursor-grab">{"\u283f"}</span>
                 </td>
-                <td style={{ padding: '12px 16px', fontSize: '0.85rem', color: '#000', fontWeight: 400 }}>
+                <td className="px-4 py-3 text-[0.85rem] font-normal text-black">
                   {project.title}
                 </td>
-                <td style={{ ...cellStyle, fontFamily: 'monospace' }}>{project.slug}</td>
-                <td style={cellStyle}>{project.year || '—'}</td>
-                <td style={cellStyle}>{project.location || '—'}</td>
-                <td style={{ padding: '12px 16px' }}>
+                <td className={`${adminTableCell} font-mono`}>{project.slug}</td>
+                <td className={adminTableCell}>{project.year || '\u2014'}</td>
+                <td className={adminTableCell}>{project.location || '\u2014'}</td>
+                <td className="px-4 py-3">
                   <button
                     type="button"
                     onClick={() => {
-                      // Optimistically remove from local list
                       setProjects((prev) => prev.filter((p) => p.id !== project.id))
                       startTransition(async () => {
                         const fd = new FormData()
@@ -152,25 +126,17 @@ export default function SortableProjectList({ projects: initialProjects }: { pro
                         router.refresh()
                       })
                     }}
-                    style={{
-                      padding: '3px 10px',
-                      fontSize: '0.65rem',
-                      letterSpacing: '0.1em',
-                      border: '1px solid #22c55e',
-                      backgroundColor: '#f0fdf4',
-                      color: '#16a34a',
-                      cursor: 'pointer',
-                    }}
+                    className="inline-flex items-center justify-center border border-[#22c55e] bg-[#f0fdf4] px-2.5 py-1 text-[0.65rem] tracking-[0.1em] text-[#16a34a]"
                   >
                     PUBLISERT
                   </button>
                 </td>
-                <td style={cellStyle}>{project.imageCount}</td>
-                <td style={{ padding: '12px 16px' }}>
-                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <td className={adminTableCell}>{project.imageCount}</td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
                     <Link
                       href={`/admin/projects/${project.id}/edit`}
-                      style={{ color: '#000', fontSize: '0.75rem', letterSpacing: '0.1em', textDecoration: 'none' }}
+                      className="text-[0.75rem] tracking-[0.1em] text-black no-underline"
                     >
                       REDIGER
                     </Link>

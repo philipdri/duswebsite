@@ -1,32 +1,20 @@
 'use client'
+import Link from 'next/link'
 import { useActionState } from 'react'
 import { updateService, type ServiceFormState } from '../../actions'
 import type { ServiceData } from '@/lib/content-db'
 import { useState } from 'react'
-
-const LABEL_STYLE: React.CSSProperties = {
-  display: 'block',
-  fontSize: '0.75rem',
-  letterSpacing: '0.1em',
-  color: '#444',
-  marginBottom: '6px',
-}
-
-const INPUT_STYLE: React.CSSProperties = {
-  width: '100%',
-  padding: '10px 12px',
-  border: '1px solid #d0d0d0',
-  fontSize: '0.9rem',
-  backgroundColor: '#fff',
-  fontFamily: 'inherit',
-  boxSizing: 'border-box',
-}
-
-const TEXTAREA_STYLE: React.CSSProperties = {
-  ...INPUT_STYLE,
-  resize: 'vertical',
-  minHeight: '120px',
-}
+import {
+  adminErrorAlert,
+  adminField,
+  adminFormNarrow,
+  adminHint,
+  adminInput,
+  adminLabel,
+  adminPrimaryButton,
+  adminSecondaryButton,
+  adminTextarea,
+} from '../../../adminStyles'
 
 interface ServiceEditFormProps {
   service: ServiceData
@@ -58,26 +46,13 @@ export default function ServiceEditForm({ service }: ServiceEditFormProps) {
   }
 
   return (
-    <form action={formAction} style={{ maxWidth: '600px' }}>
+    <form action={formAction} className={adminFormNarrow}>
       <input type="hidden" name="id" value={service.id} />
 
-      {state?.error && (
-        <div
-          style={{
-            backgroundColor: '#f8d7da',
-            border: '1px solid #f5c6cb',
-            color: '#721c24',
-            padding: '12px 16px',
-            marginBottom: '24px',
-            fontSize: '0.85rem',
-          }}
-        >
-          {state.error}
-        </div>
-      )}
+      {state?.error && <div className={adminErrorAlert}>{state.error}</div>}
 
-      <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="title" style={LABEL_STYLE}>
+      <div className={adminField}>
+        <label htmlFor="title" className={adminLabel}>
           TITTEL
         </label>
         <input
@@ -86,12 +61,12 @@ export default function ServiceEditForm({ service }: ServiceEditFormProps) {
           type="text"
           defaultValue={service.title}
           required
-          style={INPUT_STYLE}
+          className={adminInput}
         />
       </div>
 
-      <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="description" style={LABEL_STYLE}>
+      <div className={adminField}>
+        <label htmlFor="description" className={adminLabel}>
           BESKRIVELSE
         </label>
         <textarea
@@ -99,24 +74,18 @@ export default function ServiceEditForm({ service }: ServiceEditFormProps) {
           name="description"
           defaultValue={service.description}
           required
-          style={TEXTAREA_STYLE}
+          className={`${adminTextarea} min-h-[120px]`}
         />
       </div>
 
-      <div style={{ marginBottom: '28px' }}>
-        <label style={LABEL_STYLE}>BILDE</label>
+      <div className="mb-7">
+        <label className={adminLabel}>BILDE</label>
         {imageUrl && (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={imageUrl}
-            alt="Forhåndsvisning"
-            style={{
-              width: '100%',
-              maxHeight: '220px',
-              objectFit: 'cover',
-              marginBottom: '10px',
-              border: '1px solid #e0e0e0',
-            }}
+            alt="Forh\u00e5ndsvisning"
+            className="mb-2.5 max-h-[220px] w-full border border-[#e0e0e0] object-cover"
           />
         )}
         <input type="hidden" name="image" value={imageUrl} />
@@ -125,48 +94,26 @@ export default function ServiceEditForm({ service }: ServiceEditFormProps) {
           accept="image/*"
           onChange={handleImageUpload}
           disabled={uploading}
-          style={{ fontSize: '0.85rem' }}
+          className="text-[0.85rem]"
         />
-        {uploading && (
-          <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '6px' }}>Laster opp...</p>
-        )}
-        <p style={{ fontSize: '0.75rem', color: '#888', marginTop: '6px' }}>
-          Last opp et nytt bilde, eller la feltet stå tomt for å beholde eksisterende.
+        {uploading && <p className="mt-1.5 text-[0.8rem] text-[#666]">Laster opp...</p>}
+        <p className={adminHint}>
+          Last opp et nytt bilde, eller la feltet st{"\u00e5"} tomt for {"\u00e5"} beholde
+          eksisterende.
         </p>
       </div>
 
-      <div style={{ display: 'flex', gap: '12px' }}>
+      <div className="flex flex-wrap gap-3">
         <button
           type="submit"
           disabled={pending || uploading}
-          style={{
-            padding: '12px 32px',
-            backgroundColor: '#000',
-            color: '#fff',
-            border: 'none',
-            fontSize: '0.75rem',
-            letterSpacing: '0.15em',
-            cursor: pending || uploading ? 'not-allowed' : 'pointer',
-            opacity: pending || uploading ? 0.6 : 1,
-          }}
+          className={adminPrimaryButton}
         >
           {pending ? 'LAGRER...' : 'LAGRE'}
         </button>
-        <a
-          href="/admin/tjenester"
-          style={{
-            padding: '12px 24px',
-            backgroundColor: '#fff',
-            color: '#000',
-            border: '1px solid #000',
-            fontSize: '0.75rem',
-            letterSpacing: '0.15em',
-            textDecoration: 'none',
-            display: 'inline-block',
-          }}
-        >
+        <Link href="/admin/tjenester" className={adminSecondaryButton}>
           AVBRYT
-        </a>
+        </Link>
       </div>
     </form>
   )
