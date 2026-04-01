@@ -65,7 +65,7 @@ export default async function AdminDashboard() {
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '12px' }}>
+      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
         <Link
           href="/admin/projects"
           style={{
@@ -92,6 +92,34 @@ export default async function AdminDashboard() {
           }}
         >
           + NYTT PROSJEKT
+        </Link>
+        <Link
+          href="/admin/tjenester"
+          style={{
+            padding: '10px 24px',
+            backgroundColor: '#fff',
+            color: '#000',
+            textDecoration: 'none',
+            fontSize: '0.75rem',
+            letterSpacing: '0.15em',
+            border: '1px solid #000',
+          }}
+        >
+          TJENESTER
+        </Link>
+        <Link
+          href="/admin/content"
+          style={{
+            padding: '10px 24px',
+            backgroundColor: '#fff',
+            color: '#000',
+            textDecoration: 'none',
+            fontSize: '0.75rem',
+            letterSpacing: '0.15em',
+            border: '1px solid #000',
+          }}
+        >
+          INNHOLD
         </Link>
       </div>
     </div>
