@@ -76,3 +76,43 @@ export async function seedServicesAction(): Promise<void> {
   }
   revalidatePath('/admin/tjenester')
 }
+
+export async function createService(
+  _prev: ServiceFormState | null,
+  formData: FormData,
+): Promise<ServiceFormState | null> {
+  await requireAdmin()
+
+  const title = (formData.get('title') as string).trim()
+  const description = (formData.get('description') as string).trim()
+  const image = (formData.get('image') as string).trim()
+
+  if (!title || !description || !image) {
+    return { error: 'Tittel, beskrivelse og bilde er påkrevd.' }
+  }
+
+  try {
+    await ensureServicesSeeded()
+    const result = await prisma.service.aggregate({ _max: { sortOrder: true } })
+    const sortOrder = (result._max.sortOrder ?? -1) + 1
+    await prisma.service.create({ data: { title, description, image, sortOrder } })
+  } catch {
+    return { error: 'Kunne ikke opprette tjeneste. Kontroller databasetilkobling.' }
+  }
+
+  revalidatePath('/admin/tjenester')
+  revalidatePath('/tjenester')
+  redirect('/admin/tjenester')
+}
+
+export async function deleteService(formData: FormData): Promise<void> {
+  await requireAdmin()
+  const id = formData.get('id') as string
+  try {
+    await prisma.service.delete({ where: { id } })
+  } catch {
+    // ignore if already deleted
+  }
+  revalidatePath('/admin/tjenester')
+  revalidatePath('/tjenester')
+}

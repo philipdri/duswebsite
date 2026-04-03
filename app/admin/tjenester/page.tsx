@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getServices } from "@/lib/content-db";
+import DeleteServiceButton from "./DeleteServiceButton";
 import {
   adminCard,
   adminLead,
@@ -15,7 +16,15 @@ export default async function TjenesterAdminPage() {
 
   return (
     <div className={adminPageShell}>
-      <h1 className={adminTitle}>Tjenester</h1>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-4">
+        <h1 className={adminTitle}>Tjenester</h1>
+        <Link
+          href="/admin/tjenester/new"
+          className={`${adminPrimaryButton} px-5 py-2 text-[0.72rem]`}
+        >
+          + NY TJENESTE
+        </Link>
+      </div>
       <p className={adminLead}>Rediger tjenestene som vises p{"\u00e5"} Tjenester-siden.</p>
 
       <div className="flex flex-col gap-px bg-[#e0e0e0]">
@@ -40,12 +49,15 @@ export default async function TjenesterAdminPage() {
                 </p>
               </div>
             </div>
-            <Link
-              href={`/admin/tjenester/${service.id}/edit`}
-              className={`${adminPrimaryButton} shrink-0 px-5 py-2 text-[0.72rem]`}
-            >
-              REDIGER
-            </Link>
+            <div className="flex shrink-0 items-center gap-4">
+              <Link
+                href={`/admin/tjenester/${service.id}/edit`}
+                className={`${adminPrimaryButton} px-5 py-2 text-[0.72rem]`}
+              >
+                REDIGER
+              </Link>
+              <DeleteServiceButton id={service.id} title={service.title} />
+            </div>
           </div>
         ))}
       </div>
