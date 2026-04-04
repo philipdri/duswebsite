@@ -42,7 +42,7 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
     >
       <Link
         href={`/prosjekter/${project.slug}`}
-        className="group relative block aspect-[4/3] w-full overflow-hidden md:w-[60%]"
+        className="group relative block aspect-4/3 w-full overflow-hidden md:w-[60%]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

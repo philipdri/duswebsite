@@ -14,7 +14,9 @@ export const dynamic = "force-dynamic";
 async function getStats() {
   try {
     const total = await prisma.project.count();
-    const published = await prisma.project.count({ where: { published: true } });
+    const published = await prisma.project.count({
+      where: { published: true },
+    });
     return { total, published, unpublished: total - published };
   } catch {
     return null;
@@ -33,8 +35,8 @@ export default async function AdminDashboard() {
 
       {stats === null && (
         <div className={`${adminWarningAlert} mb-6`}>
-          <strong>Database ikke tilkoblet.</strong> Sett opp `DATABASE_URL` i `.env`
-          for {"\u00e5"} aktivere databasefunksjonalitet.
+          <strong>Database ikke tilkoblet.</strong> Sett opp `DATABASE_URL` i
+          `.env` for {"\u00e5"} aktivere databasefunksjonalitet.
         </div>
       )}
 
@@ -45,9 +47,12 @@ export default async function AdminDashboard() {
             { label: "Publiserte", value: stats.published },
             { label: "Upubliserte", value: stats.unpublished },
           ].map((s) => (
-            <div key={s.label} className="border border-[#e5e5e5] bg-white px-6 py-6 text-center">
+            <div
+              key={s.label}
+              className="border border-[#e5e5e5] bg-white px-6 py-6 text-center"
+            >
               <p className="m-0 text-[2rem] font-light text-black">{s.value}</p>
-              <p className="mt-1 text-[0.75rem] tracking-[0.1em] text-dus-muted">
+              <p className="mt-1 text-[0.75rem] tracking-widest text-dus-muted">
                 {s.label.toUpperCase()}
               </p>
             </div>

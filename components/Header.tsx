@@ -11,7 +11,7 @@ const LOGO_TRANSITION_PX = 320;
 // Natural size of the small header logo (px)
 const SMALL_LOGO_SIZE = 36;
 // Enlarged size of the logo in the hero (px)
-const LARGE_LOGO_SIZE = 120;
+const LARGE_LOGO_SIZE = 200;
 // Header height from CSS variable --header-height (px)
 const HEADER_HEIGHT = 100;
 
@@ -153,7 +153,7 @@ export default function Header() {
 
   return (
     <header
-      className="fixed left-0 top-0 z-[200] flex h-[var(--header-height)] w-full items-center justify-between bg-dus-bg px-[clamp(1rem,3vw,2.25rem)] transition-shadow duration-300"
+      className="fixed left-0 top-0 z-200 flex h-(--header-height) w-full items-center justify-between bg-dus-bg px-[clamp(1rem,3vw,2.25rem)] transition-shadow duration-300"
       style={{
         boxShadow: scrolled || menuOpen ? "0 2px 10px rgba(0,0,0,0.1)" : "none",
       }}
@@ -183,16 +183,23 @@ export default function Header() {
         DUS ARKITEKTER
       </Link>
 
-      <div key={pathname ?? "mobile-nav"} className="relative z-[230] flex items-center" ref={menuRef}>
+      <div
+        key={pathname ?? "mobile-nav"}
+        className="relative z-230 flex items-center"
+        ref={menuRef}
+      >
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className="relative z-[230] inline-flex min-h-14 min-w-14 items-center justify-center border-0 bg-transparent py-2 text-black"
+          className="relative z-230 inline-flex min-h-14 min-w-14 items-center justify-center border-0 bg-transparent py-2 text-black"
           aria-expanded={menuOpen}
           aria-controls="mobile-nav-panel"
           aria-label={menuOpen ? "Lukk meny" : "Apne meny"}
         >
-          <span className="flex flex-col items-center justify-center gap-[5px]" aria-hidden>
+          <span
+            className="flex flex-col items-center justify-center gap-1.25"
+            aria-hidden
+          >
             <span
               className="block h-[2.5px] w-8 bg-black transition-all duration-300"
               style={{
@@ -222,7 +229,7 @@ export default function Header() {
 
       <div
         id="mobile-nav-panel"
-        className="fixed inset-0 z-[220] overflow-hidden bg-dus-bg"
+        className="fixed inset-0 z-220 overflow-y-auto bg-dus-bg"
         aria-hidden={!menuOpen}
         style={{
           opacity: menuOpen ? 1 : 0,
@@ -233,44 +240,46 @@ export default function Header() {
           transition: "transform 0.45s ease, opacity 0.3s ease",
         }}
       >
-        <nav
-          ref={menuPanelRef}
-          className="box-border flex h-min w-full flex-col items-center justify-center gap-12 overflow-x-hidden px-8 pb-12 pt-[var(--header-height)]"
-        >
-          {links.map((item) =>
-            item.href.startsWith("/#") ? (
-              <button
-                key={item.href}
-                type="button"
-                className={`${menuItemBaseClass} border-0 bg-transparent ${hoveredItem === item.href ? "opacity-[0.65]" : "opacity-100"}`}
-                onMouseEnter={() => setHoveredItem(item.href)}
-                onMouseLeave={() => setHoveredItem(null)}
-                onClick={() => handleMenuNavigation(item.href)}
-              >
-                <span>{item.label}</span>
-                <span
-                  aria-hidden
-                  className={`${menuUnderlineBaseClass} ${hoveredItem === item.href ? "scale-x-100" : "scale-x-0"}`}
-                />
-              </button>
-            ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`${menuItemBaseClass} no-underline ${hoveredItem === item.href ? "opacity-[0.65]" : "opacity-100"}`}
-                onMouseEnter={() => setHoveredItem(item.href)}
-                onMouseLeave={() => setHoveredItem(null)}
-                onClick={() => setMenuOpen(false)}
-              >
-                <span>{item.label}</span>
-                <span
-                  aria-hidden
-                  className={`${menuUnderlineBaseClass} ${hoveredItem === item.href ? "scale-x-100" : "scale-x-0"}`}
-                />
-              </Link>
-            ),
-          )}
-        </nav>
+        <div className="box-border flex min-h-svh w-full flex-col">
+          <nav
+            ref={menuPanelRef}
+            className="my-auto flex w-full flex-col items-center justify-center gap-12 overflow-x-hidden px-8 py-12"
+          >
+            {links.map((item) =>
+              item.href.startsWith("/#") ? (
+                <button
+                  key={item.href}
+                  type="button"
+                  className={`${menuItemBaseClass} border-0 bg-transparent ${hoveredItem === item.href ? "opacity-[0.65]" : "opacity-100"}`}
+                  onMouseEnter={() => setHoveredItem(item.href)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  onClick={() => handleMenuNavigation(item.href)}
+                >
+                  <span>{item.label}</span>
+                  <span
+                    aria-hidden
+                    className={`${menuUnderlineBaseClass} ${hoveredItem === item.href ? "scale-x-100" : "scale-x-0"}`}
+                  />
+                </button>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`${menuItemBaseClass} no-underline ${hoveredItem === item.href ? "opacity-[0.65]" : "opacity-100"}`}
+                  onMouseEnter={() => setHoveredItem(item.href)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span>{item.label}</span>
+                  <span
+                    aria-hidden
+                    className={`${menuUnderlineBaseClass} ${hoveredItem === item.href ? "scale-x-100" : "scale-x-0"}`}
+                  />
+                </Link>
+              ),
+            )}
+          </nav>
+        </div>
       </div>
     </header>
   );

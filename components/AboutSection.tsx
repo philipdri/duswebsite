@@ -15,7 +15,7 @@ export default async function AboutSection() {
   return (
     <section
       id="omoss"
-      className="relative mx-4 mt-12 rounded-t-[50px] bg-dus-bg px-4 py-10 shadow-[0_-2px_15px_rgba(0,0,0,0.1)] sm:mx-[5%] sm:mt-[80px] sm:px-[40px] sm:py-[80px]"
+      className="relative mx-4 mt-12 rounded-t-[50px] bg-dus-bg px-4 py-10 shadow-[0_-2px_15px_rgba(0,0,0,0.1)] sm:mx-[5%] sm:mt-20 sm:px-10 sm:py-20"
     >
       <div className="max-w-4xl mx-auto">
         <h2
@@ -27,7 +27,10 @@ export default async function AboutSection() {
         <div className="flex flex-col gap-12">
           <div>
             {paragraphs.map((para, i) => (
-              <p key={i} className={`${bodyTextClass} ${i < paragraphs.length - 1 ? "mb-4" : ""}`}>
+              <p
+                key={i}
+                className={`${bodyTextClass} ${i < paragraphs.length - 1 ? "mb-4" : ""}`}
+              >
                 {para}
               </p>
             ))}
