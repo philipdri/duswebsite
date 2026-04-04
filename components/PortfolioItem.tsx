@@ -48,7 +48,7 @@ export default function PortfolioItem({ project, index }: PortfolioItemProps) {
         <img
           src={project.coverImage}
           alt={project.title}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-[rgba(247,244,240,0.7)] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <span className="font-classico text-sm font-light tracking-[0.25em] text-black">
