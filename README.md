@@ -86,11 +86,16 @@ For a complete, step-by-step guide to setting up the PostgreSQL database (using 
 
 ## Deployment on Vercel
 
-1. Connect the repo to Vercel
-2. In Vercel settings → Environment Variables, add `DATABASE_URL`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`
-3. Set build command to: `npx prisma generate && next build`
-4. Run `npx prisma migrate deploy` before first deploy
-5. Deploy
+1. Connect the repo to Vercel.
+2. In Vercel settings → **Environment Variables**, add `DATABASE_URL`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` (and `BLOB_READ_WRITE_TOKEN` for image uploads).
+3. Ensure the **Framework Preset** in Vercel settings is set to **Next.js** (the `vercel.json` now sets `"framework": "nextjs"` to enforce this automatically).
+4. The build command is already configured in `vercel.json`: `npx prisma generate && npx prisma migrate deploy && next build` — this generates the Prisma client and applies any pending database migrations on every deploy.
+5. Deploy.
+
+> **Troubleshooting 404 on Vercel:** If the site returns 404 after deployment, check:
+> - The Framework Preset in Vercel → Settings → General is **Next.js**.
+> - All required environment variables are set (see above).
+> - The Vercel build log shows a successful build (not a build error).
 
 See [DATABASE_SETUP_GUIDE.md](./DATABASE_SETUP_GUIDE.md) for a detailed walkthrough.
 

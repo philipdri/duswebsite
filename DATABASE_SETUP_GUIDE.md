@@ -184,30 +184,23 @@ In Vercel → **Settings** → **Build & Development Settings**, set:
 
 | Setting | Value |
 |---|---|
-| **Build Command** | `npx prisma generate && next build` |
 | **Framework Preset** | Next.js |
+| **Build Command** | leave blank (controlled by `vercel.json`) |
 
-The `vercel.json` file in the repository already sets the build command automatically, so this may already be configured.
+The `vercel.json` file in the repository already sets the build command to `npx prisma generate && npx prisma migrate deploy && next build` and the framework to `nextjs`, so these are configured automatically.
+
+> **Important:** Make sure the **Framework Preset** in Vercel is set to **Next.js**. If it is set to anything else (for example "Other"), Vercel will not know how to serve the app and every page will return a 404.
 
 ### First deploy
 
 Push your code (or trigger a new deployment in the Vercel dashboard). Vercel will:
 
 1. Run `npx prisma generate`
-2. Build the Next.js app
-3. Deploy to production
+2. Run `npx prisma migrate deploy` (creates or updates database tables automatically)
+3. Build the Next.js app
+4. Deploy to production
 
 After the deployment succeeds, your site is live at your Vercel URL (e.g. `https://duswebsite.vercel.app` or your custom domain).
-
-### Run migrations in production (required for future schema changes)
-
-If you ever update `prisma/schema.prisma` (only done by a developer), deploy the migration with:
-
-```bash
-npx prisma migrate deploy
-```
-
-This applies pending migrations to the production database without losing data. For the initial setup, the tables are already created from Step 4d.
 
 ---
 
@@ -252,6 +245,14 @@ Use this as a quick reference:
 ---
 
 ## Troubleshooting
+
+### Site shows 404 on every page after deploying
+
+This almost always means Vercel is not serving the app as a Next.js application.
+
+- Go to Vercel → **Settings** → **General** and confirm **Framework Preset** is set to **Next.js**. If it shows anything else (e.g. "Other"), change it to Next.js and redeploy.
+- The `vercel.json` in the repository sets `"framework": "nextjs"` to enforce this, but a manual Vercel project setting can override it.
+- Check the Vercel **Build Logs** for the deployment — if the build failed, fix the reported error and redeploy.
 
 ### "Can't reach database server"
 
