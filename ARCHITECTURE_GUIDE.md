@@ -35,16 +35,29 @@
 │   │   ├── page.tsx            # Admin dashboard
 │   │   ├── login/
 │   │   │   └── page.tsx        # Admin login page
-│   │   └── projects/
-│   │       ├── page.tsx        # Project list
-│   │       ├── actions.ts      # Server actions: CRUD + toggle
-│   │       ├── new/
-│   │       │   └── page.tsx    # Create project
-│   │       ├── [id]/
-│   │       │   └── edit/
-│   │       │       └── page.tsx # Edit project
-│   │       └── components/
-│   │           └── ProjectForm.tsx  # Shared create/edit form (client)
+│   │   ├── projects/
+│   │   │   ├── page.tsx        # Project list
+│   │   │   ├── actions.ts      # Server actions: CRUD + toggle + reorder
+│   │   │   ├── new/
+│   │   │   │   └── page.tsx    # Create project
+│   │   │   ├── [id]/
+│   │   │   │   └── edit/
+│   │   │   │       └── page.tsx # Edit project
+│   │   │   └── components/
+│   │   │       ├── ProjectForm.tsx         # Shared create/edit form (client)
+│   │   │       ├── DeleteProjectButton.tsx # Delete with confirm dialog
+│   │   │       ├── PublishButton.tsx       # Toggle publish status
+│   │   │       └── SortableProjectList.tsx # Drag-and-drop reorder
+│   │   ├── tjenester/
+│   │   │   ├── page.tsx        # Services list
+│   │   │   ├── actions.ts      # Server action: updateService
+│   │   │   └── [id]/edit/
+│   │   │       ├── page.tsx         # Edit one service
+│   │   │       └── ServiceEditForm.tsx # Form component (client)
+│   │   └── content/
+│   │       ├── page.tsx        # Edit site text content
+│   │       ├── actions.ts      # Server action: saveSiteContent
+│   │       └── ContentForm.tsx # Form component (client)
 │   └── actions/
 │       └── auth.ts             # Login / logout server actions
 │
@@ -63,7 +76,8 @@
 │   ├── session.ts              # JWT session creation/verification
 │   ├── projects.ts             # Static project data (fallback when DB unavailable)
 │   ├── projects-db.ts          # DB-backed project queries
-│   └── services.ts             # 3 services: typed array
+│   ├── content-db.ts           # DB queries for site content + services (with fallbacks)
+│   └── services.ts             # Static services data (fallback when DB unavailable)
 │
 ├── types/
 │   └── ion-icon.d.ts           # TypeScript declaration for <ion-icon> custom element
@@ -101,6 +115,9 @@
 | `/admin/projects` | `app/admin/projects/page.tsx` | Dynamic (protected) |
 | `/admin/projects/new` | `app/admin/projects/new/page.tsx` | Static (protected) |
 | `/admin/projects/[id]/edit` | `app/admin/projects/[id]/edit/page.tsx` | Dynamic (protected) |
+| `/admin/tjenester` | `app/admin/tjenester/page.tsx` | Dynamic (protected) |
+| `/admin/tjenester/[id]/edit` | `app/admin/tjenester/[id]/edit/page.tsx` | Dynamic (protected) |
+| `/admin/content` | `app/admin/content/page.tsx` | Dynamic (protected) |
 
 Public project pages are dynamically rendered and read only `published: true` projects from the database.
 
